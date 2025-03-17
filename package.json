@@ -1,0 +1,19 @@
+{
+  "name": "lighthouse",
+  "version": "1.0.0",
+  "description": "Lighthouse NodeJs",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elysom/LightHouse.git"
+  },
+  "author": "SAGATECH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Elysom/LightHouse/issues"
+  },
+  "homepage": "https://github.com/Elysom/LightHouse#readme"
+}
