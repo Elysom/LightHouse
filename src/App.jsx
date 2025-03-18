@@ -13,16 +13,16 @@ function App() {
     setLoading(true);
     setError(null);
     setData(null);
-    
+
     try {
       const response = await fetch("http://localhost:5000/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain }),
       });
-      
+
       if (!response.ok) throw new Error("Error en el análisis");
-      
+
       const result = await response.json();
       setData(result);
     } catch (err) {
@@ -38,7 +38,7 @@ function App() {
       <form onSubmit={handleSubmit} className="bg-white p-4 rounded-lg shadow-md w-full max-w-md">
         <input
           type="text"
-          placeholder="Ingrese el dominio"
+          placeholder="Ingrese el dominio (ej. https://ejemplo.com)"
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded mb-2"
@@ -51,12 +51,12 @@ function App() {
           {loading ? "Analizando..." : "Analizar"}
         </button>
       </form>
-      
+
       {error && <p className="text-red-500 mt-4">{error}</p>}
-      
+
       {data && (
         <div className="mt-6 w-full max-w-lg bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Resultados</h2>
+          <h2 className="text-xl font-semibold mb-4">Resultados para {data.domain}</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data.metrics}>
               <XAxis dataKey="name" />
