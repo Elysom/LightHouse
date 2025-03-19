@@ -23,7 +23,7 @@ app.post('/analyze', (req, res) => {
   console.log(`Recibiendo solicitud para analizar el dominio: ${domain}`);
 
   // Ejecutar el comando Unlighthouse
-  exec(`npx unlighthouse --site ${domain} --output json --save false`, (error, stdout, stderr) => {
+  exec(`npx unlighthouse --site ${domain} --save false`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error al ejecutar Unlighthouse: ${error.message}`);
       return res.status(500).json({ error: 'Error al ejecutar el análisis' });
@@ -34,7 +34,6 @@ app.post('/analyze', (req, res) => {
       return res.status(500).json({ error: 'Error en el análisis' });
     }
 
-    console.log('Análisis completado exitosamente.');
 
     // Definir la ruta de la carpeta .unlighthouse
     const reportsDir = path.resolve(process.cwd(), '.unlighthouse');

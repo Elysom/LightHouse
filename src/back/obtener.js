@@ -4,8 +4,6 @@ import fs from 'fs';
 import path from 'path';
 
 const app = express();
-
-// Habilitar CORS para todas las rutas
 app.use(cors());
 app.use(express.json());
 
@@ -13,6 +11,7 @@ app.post('/analyze', (req, res) => {
   const { domain } = req.body;
   const reportsDir = path.resolve(process.cwd(), '.unlighthouse');
 
+  // Función para buscar recursivamente archivos JSON en un directorio y subdirectorios
   const findJsonFiles = (dir) => {
     let results = [];
     const items = fs.readdirSync(dir);
@@ -33,33 +32,53 @@ app.post('/analyze', (req, res) => {
     return res.status(404).json({ error: "No se encontraron archivos JSON en .unlighthouse" });
   }
 
-  let metrics = null;
-  for (const file of jsonFiles) {
+  // Variables para acumular los scores y contar cuántos archivos tienen cada métrica
+  let performanceSum = 0, performanceCount = 0;
+  let seoSum = 0, seoCount = 0;
+  let accessibilitySum = 0, accessibilityCount = 0;
+  let bestPracticesSum = 0, bestPracticesCount = 0;
+
+  jsonFiles.forEach(file => {
     try {
       const data = fs.readFileSync(file, 'utf8');
       const report = JSON.parse(data);
       if (report.categories) {
-        metrics = [
-          { name: 'Performance', score: report.categories.performance?.score },
-          { name: 'SEO', score: report.categories.seo?.score },
-          { name: 'Accesibilidad', score: report.categories.accessibility?.score },
-          { name: 'Buenas Prácticas', score: report.categories['best-practices']?.score }
-        ];
-        break;
+        if (report.categories.performance?.score != null) {
+          performanceSum += report.categories.performance.score;
+          performanceCount++;
+        }
+        if (report.categories.seo?.score != null) {
+          seoSum += report.categories.seo.score;
+          seoCount++;
+        }
+        if (report.categories.accessibility?.score != null) {
+          accessibilitySum += report.categories.accessibility.score;
+          accessibilityCount++;
+        }
+        if (report.categories['best-practices']?.score != null) {
+          bestPracticesSum += report.categories['best-practices'].score;
+          bestPracticesCount++;
+        }
       }
     } catch (error) {
       console.error("Error al procesar el archivo:", file, error);
     }
-  }
+  });
 
-  if (!metrics) {
+  // Verificamos que al menos alguna métrica se haya encontrado
+  if (performanceCount === 0 && seoCount === 0 && accessibilityCount === 0 && bestPracticesCount === 0) {
     return res.status(404).json({ error: "No se encontraron métricas válidas en los archivos JSON" });
   }
 
-  return res.json({
-    domain,
-    metrics
-  });
+  // Calculamos el promedio de cada métrica (o null si no se encontró)
+  const metrics = [
+    { name: 'Performance', score: performanceCount ? performanceSum / performanceCount : null },
+    { name: 'SEO', score: seoCount ? seoSum / seoCount : null },
+    { name: 'Accesibilidad', score: accessibilityCount ? accessibilitySum / accessibilityCount : null },
+    { name: 'Buenas Prácticas', score: bestPracticesCount ? bestPracticesSum / bestPracticesCount : null },
+  ];
+
+  return res.json({ domain, metrics });
 });
 
 app.listen(5000, () => {
