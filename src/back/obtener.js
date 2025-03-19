@@ -1,49 +1,67 @@
+import express from 'express';
+import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 
-const reportsDir = path.resolve(process.cwd(), '.unlighthouse');
+const app = express();
 
-// Función para buscar recursivamente archivos JSON en un directorio y sus subdirectorios
-const findJsonFiles = (dir) => {
-  let results = [];
-  const items = fs.readdirSync(dir);
-  for (const item of items) {
-    const itemPath = path.join(dir, item);
-    const stats = fs.statSync(itemPath);
-    if (stats.isDirectory()) {
-      // Llamada recursiva para directorios hijos
-      results = results.concat(findJsonFiles(itemPath));
-    } else if (stats.isFile() && item.endsWith('.json')) {
-      results.push(itemPath);
+// Habilitar CORS para todas las rutas
+app.use(cors());
+app.use(express.json());
+
+app.post('/analyze', (req, res) => {
+  const { domain } = req.body;
+  const reportsDir = path.resolve(process.cwd(), '.unlighthouse');
+
+  const findJsonFiles = (dir) => {
+    let results = [];
+    const items = fs.readdirSync(dir);
+    for (const item of items) {
+      const itemPath = path.join(dir, item);
+      const stats = fs.statSync(itemPath);
+      if (stats.isDirectory()) {
+        results = results.concat(findJsonFiles(itemPath));
+      } else if (stats.isFile() && item.endsWith('.json')) {
+        results.push(itemPath);
+      }
+    }
+    return results;
+  };
+
+  const jsonFiles = findJsonFiles(reportsDir);
+  if (jsonFiles.length === 0) {
+    return res.status(404).json({ error: "No se encontraron archivos JSON en .unlighthouse" });
+  }
+
+  let metrics = null;
+  for (const file of jsonFiles) {
+    try {
+      const data = fs.readFileSync(file, 'utf8');
+      const report = JSON.parse(data);
+      if (report.categories) {
+        metrics = [
+          { name: 'Performance', score: report.categories.performance?.score },
+          { name: 'SEO', score: report.categories.seo?.score },
+          { name: 'Accesibilidad', score: report.categories.accessibility?.score },
+          { name: 'Buenas Prácticas', score: report.categories['best-practices']?.score }
+        ];
+        break;
+      }
+    } catch (error) {
+      console.error("Error al procesar el archivo:", file, error);
     }
   }
-  return results;
-};
 
-const jsonFiles = findJsonFiles(reportsDir);
+  if (!metrics) {
+    return res.status(404).json({ error: "No se encontraron métricas válidas en los archivos JSON" });
+  }
 
-if (jsonFiles.length > 0) {
-  jsonFiles.forEach((file) => {
-    fs.readFile(file, 'utf8', (err, data) => {
-      if (err) {
-        console.error('Error leyendo el archivo:', file, err);
-        return;
-      }
-
-      try {
-        const report = JSON.parse(data);
-        console.log(`Archivo: ${file}`);
-        console.log('Performance Score:', report.categories?.performance?.score);
-        console.log('SEO Score:', report.categories?.seo?.score);
-        console.log('Accesibilidad Score:', report.categories?.accessibility?.score);
-        // Algunas herramientas usan "best-practices" como key; de lo contrario, ajustar según el JSON
-        console.log('Buenas Prácticas Score:', report.categories?.['best-practices']?.score);
-        console.log('----------------------------------------');
-      } catch (error) {
-        console.error('Error al parsear el JSON del archivo:', file, error);
-      }
-    });
+  return res.json({
+    domain,
+    metrics
   });
-} else {
-  console.error('No se encontraron archivos JSON en .unlighthouse');
-}
+});
+
+app.listen(5000, () => {
+  console.log("Servidor corriendo en el puerto 5000");
+});
