@@ -1,36 +1,63 @@
-import express from "express";
-import cors from "cors";
-import { exec } from "node:child_process";
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors'; // Importamos el paquete cors
+import { exec } from 'child_process';
 
 const app = express();
-app.use(express.json());
+const port = 5000;
+
+// Configurar CORS para permitir solicitudes de cualquier origen
 app.use(cors());
 
-app.post("/analyze", (req, res) => {
+// Middleware para analizar JSON
+app.use(bodyParser.json());
+
+// Ruta para recibir el análisis del dominio
+app.post('/analyze', (req, res) => {
   const { domain } = req.body;
-  if (!domain) return res.status(400).json({ error: "Dominio requerido" });
 
-  // Asegúrate de que el comando Lighthouse apunte al puerto correcto
-  const command = `npx unlighthouse --site ${domain} --format json --port 5678`;
+  // Validación del dominio
+  if (!domain) {
+    return res.status(400).json({ error: 'El dominio es requerido' });
+  }
 
-  exec(command, (error, stdout, stderr) => {
-    if (error || stderr) {
-      return res.status(500).json({ error: error?.message || stderr });
+  console.log(`Recibiendo solicitud para analizar el dominio: ${domain}`);
+
+  // Ejecutar el comando Unlighthouse para obtener los resultados
+  exec(`npx unlighthouse --site ${domain} --output json --save false`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error al ejecutar Unlighthouse: ${error.message}`);
+      return res.status(500).json({ error: 'Error al ejecutar el análisis' });
     }
 
-    try {
-      const result = JSON.parse(stdout);
-      const metrics = Object.entries(result.categories).map(([key, value]) => ({
-        name: key,
-        score: value.score * 100,
-      }));
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return res.status(500).json({ error: 'Error en el análisis' });
+    }
 
+    console.log('Análisis completado exitosamente.');
+    try {
+      // Procesamos los resultados (asumimos que Unlighthouse devuelve un JSON)
+      const result = JSON.parse(stdout);
+
+      // Formateamos los datos a la estructura que espera el frontend
+      const metrics = [
+        { name: 'Rendimiento', score: result.performance },
+        { name: 'Accesibilidad', score: result.accessibility },
+        { name: 'Buenas prácticas', score: result.best_practices },
+        { name: 'SEO', score: result.seo },
+      ];
+
+      // Enviamos los resultados al frontend
       res.json({ domain, metrics });
-    } catch (parseError) {
-      res.status(500).json({ error: "Error al procesar datos" });
+    } catch (err) {
+      console.error('Error al procesar el resultado de Unlighthouse:', err);
+      res.status(500).json({ error: 'Error al procesar los resultados' });
     }
   });
 });
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+// Iniciar el servidor
+app.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
+});

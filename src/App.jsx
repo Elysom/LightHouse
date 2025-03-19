@@ -19,7 +19,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain }),
-      });
+      });      
 
       if (!response.ok) throw new Error("Error en el análisis");
 
