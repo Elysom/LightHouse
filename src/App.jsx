@@ -19,7 +19,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain }),
-      });      
+      });
 
       if (!response.ok) throw new Error("Error en el análisis");
 
@@ -54,17 +54,22 @@ function App() {
 
       {error && <p className="text-red-500 mt-4">{error}</p>}
 
-      {data && (
-        <div className="mt-6 w-full max-w-lg bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Resultados para {data.domain}</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data.metrics}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="score" fill="#4A90E2" />
-            </BarChart>
-          </ResponsiveContainer>
+      {data && data.reports && (
+        <div className="mt-6 w-full max-w-lg">
+          <h2 className="text-xl font-semibold mb-4 text-teal-400">Resultados para {data.domain}</h2>
+          {data.reports.map((report, index) => (
+            <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700 mb-6">
+              <h3 className="text-lg font-semibold text-teal-400 mb-4">Subdominio: {report.folder}</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={report.metrics}>
+                  <XAxis dataKey="name" stroke="#ddd" />
+                  <YAxis stroke="#ddd" />
+                  <Tooltip />
+                  <Bar dataKey="score" fill="#14b8a6" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          ))}
         </div>
       )}
     </div>
