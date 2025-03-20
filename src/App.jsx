@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import "./App.css";
 
@@ -7,6 +7,19 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
+
+  // Efecto para aplicar el modo oscuro al body
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,43 +46,65 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-4">Analizador de Dominios</h1>
-      <form onSubmit={handleSubmit} className="bg-white p-4 rounded-lg shadow-md w-full max-w-md">
+    <div className="app-container">
+      {/* Botón de modo oscuro en la esquina superior derecha */}
+      <button className="dark-mode-toggle" onClick={() => setDarkMode(!darkMode)}>
+        {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
+      </button>
+
+      {/* Logo de la empresa */}
+      <img src="/logo.jpeg" alt="SagaTech Logo" className="logo" />
+      
+      <h1 className="title">SagaTech Analizer</h1>
+      
+      <form onSubmit={handleSubmit} className="form-container">
         <input
           type="text"
           placeholder="Ingrese el dominio (ej. https://ejemplo.com)"
           value={domain}
           onChange={(e) => setDomain(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-2"
+          className="input-field"
         />
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-          disabled={loading}
-        >
+        <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? "Analizando..." : "Analizar"}
         </button>
       </form>
 
-      {error && <p className="text-red-500 mt-4">{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
       {data && data.reports && (
-        <div className="mt-6 w-full max-w-lg">
-          <h2 className="text-xl font-semibold mb-4 text-teal-400">Resultados para {data.domain}</h2>
-          {data.reports.map((report, index) => (
-            <div key={index} className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700 mb-6">
-              <h3 className="text-lg font-semibold text-teal-400 mb-4">Subdominio: {report.folder}</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={report.metrics}>
-                  <XAxis dataKey="name" stroke="#ddd" />
-                  <YAxis stroke="#ddd" />
-                  <Tooltip />
-                  <Bar dataKey="score" fill="#14b8a6" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          ))}
+        <div className="results-container">
+          <h2 className="results-title">Resultados para {data.domain}</h2>
+          <div className="reports-grid">
+            {data.reports.map((report, index) => {
+              const formattedMetrics = report.metrics.map(m => ({
+                ...m,
+                name: m.name.toLowerCase() === "accessibility" ? "Accesibilidad" : m.name
+              }));
+              return (
+                <div key={index} className="report-card">
+                  <h3 className="report-subtitle">Subdominio: {report.folder}</h3>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <BarChart 
+                      data={formattedMetrics} 
+                      margin={{ bottom: 80 }}>
+                      <XAxis 
+                        dataKey="name" 
+                        stroke="#555" 
+                        angle={0} 
+                        textAnchor="middle"
+                        tick={{ fontSize: 14 }}
+                        tickMargin={10}
+                      />
+                      <YAxis stroke="#555" />
+                      <Tooltip />
+                      <Bar dataKey="score" fill="#14b8a6" radius={[8, 8, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

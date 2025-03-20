@@ -1,42 +1,163 @@
-#root {
-  max-width: 1280px;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+:root {
+  --primary-bg: #ffffff;
+  --secondary-bg: #f8f9fa;
+  --accent-color: #007bff;
+  --neon-blue: #00aaff;
+  --text-color: #333;
+  --border-color: #ddd;
+}
+
+.dark-mode {
+  --primary-bg: #121212;
+  --secondary-bg: #1e1e1e;
+  --text-color: #f5f5f5;
+  --border-color: #333;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: var(--primary-bg);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px;
+  position: relative;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode {
+  background-color: var(--primary-bg);
+  color: var(--text-color);
+}
+
+/* Botón de modo oscuro */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--neon-blue);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  z-index: 1000;
+}
+
+.dark-mode-toggle:hover {
+  background: #0088cc;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1100px;
+  background: var(--secondary-bg);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 0px 15px rgba(0, 170, 255, 0.4);
+  text-align: center;
+  position: relative;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: var(--accent-color);
+  text-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 2rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text-color);
+  font-size: 18px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: var(--neon-blue);
+  outline: none;
+  box-shadow: 0px 0px 8px rgba(0, 170, 255, 0.6);
+}
+
+.submit-btn {
+  background: var(--neon-blue);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #0088cc;
+  box-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
+}
+
+
+
+.results-container {
+  margin-top: 30px;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.results-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-content: center;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .reports-grid {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.report-card {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 15px rgba(0, 170, 255, 0.3);
+  transition: box-shadow 0.3s ease;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.report-card:hover {
+  box-shadow: 0px 0px 25px rgba(0, 170, 255, 0.6);
 }
