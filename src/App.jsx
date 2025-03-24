@@ -77,17 +77,20 @@ function App() {
 
       {datos && datos.reports && (
         <div className="results-container">
-          <h2 className="results-title">Resultados para: {datos.domain}</h2>
+          <h2 className="title">Resultados para: {datos.domain}</h2>
           {/* Generar gráficas */}
           <div className="reports-grid">
             {datos.reports.map((report, index) => {
-              const formattedMetrics = report.metrics.map(m => ({
-                ...m,
-                name: m.name.toLowerCase() === "accessibility" ? "Accesibilidad" : m.name
-              }));
+              // Ordenar las métricas en el orden de Unlighthouse
+              const ordenDeseado = ["Rendimiento", "Accesibilidad", "Buenas Prácticas", "SEO"];
+              const formattedMetrics = report.metrics
+              .sort((a, b) => ordenDeseado.indexOf(a.name) - ordenDeseado.indexOf(b.name));
+              
               return (
                 <div key={index} className="report-card">
-                  <h3 className="report-subtitle">Subdominio: {report.folder}</h3>
+                  <h3 className="report-subtitle" style={{ color: "black" }}>
+                    Subdominio: {report.folder}
+                  </h3>
                   {/* Estructura gráfica */}
                   <ResponsiveContainer width="100%" height={400}>
                     <BarChart 
@@ -98,7 +101,7 @@ function App() {
                         stroke="#555" 
                         angle={0} 
                         textAnchor="middle"
-                        tick={{ fontSize: 14 }}
+                        tick={{ fontSize: 13 }}
                         tickMargin={10}
                       />
                       <YAxis stroke="#555" />

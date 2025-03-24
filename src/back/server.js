@@ -66,10 +66,10 @@ app.post('/analizar', (req, res) => {
     
           if (puntuacion.categories) {
             const metricas = [
-              { name: 'Performance', score: puntuacion.categories.performance?.score ?? "N/A" },
-              { name: 'SEO', score: puntuacion.categories.seo?.score ?? "N/A" },
+              { name: 'Rendimiento', score: puntuacion.categories.performance?.score ?? "N/A" },
               { name: 'Accesibilidad', score: puntuacion.categories.accessibility?.score ?? "N/A" },
               { name: 'Buenas Prácticas', score: puntuacion.categories['best-practices']?.score ?? "N/A" },
+              { name: 'SEO', score: puntuacion.categories.seo?.score ?? "N/A" },
             ];
     
             // Obtener el nombre de la carpeta padre
