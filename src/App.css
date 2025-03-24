@@ -12,8 +12,8 @@
 .dark-mode {
   --primary-bg: #121212;
   --secondary-bg: #1e1e1e;
-  --text-color: #000000;
-  --border-color: #383838;
+  --text-color: #f5f5f5;
+  --border-color: #333;
 }
 
 * {
@@ -40,6 +40,28 @@ body.dark-mode {
   color: var(--text-color);
 }
 
+/* Cambiar color de los títulos de las gráficas cuando se activa el modo oscuro */
+body.dark-mode .report-subtitle {
+  color: #000; /* Cambiar a negro para que se vea bien */
+}
+
+
+
+
+
+
+/* Aumentamos el ancho máximo del contenedor principal para que la gráfica tenga más espacio horizontal */
+.app-container.wide-container {
+  width: 100%;
+  max-width: 1200px;
+  background: var(--secondary-bg);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 0px 15px rgba(0, 170, 255, 0.4);
+  text-align: center;
+  position: relative;
+}
+
 .dark-mode-toggle {
   position: fixed;
   top: 20px;
@@ -57,17 +79,6 @@ body.dark-mode {
 
 .dark-mode-toggle:hover {
   background: #0088cc;
-}
-
-.app-container {
-  width: 100%;
-  max-width: 1100px;
-  background: var(--secondary-bg);
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0px 0px 15px rgba(0, 170, 255, 0.4);
-  text-align: center;
-  position: relative;
 }
 
 .title {
@@ -121,8 +132,6 @@ body.dark-mode {
   box-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
 }
 
-
-
 .results-container {
   margin-top: 30px;
   text-align: center;
@@ -136,23 +145,17 @@ body.dark-mode {
 
 .reports-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(550px, 1fr));
   gap: 20px;
   justify-content: center;
   align-items: start;
-}
-
-@media (max-width: 900px) {
-  .reports-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
 }
 
 .report-card {
   background: white;
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 40px;
+  padding: 20px;
   box-shadow: 0px 0px 15px rgba(0, 170, 255, 0.3);
   transition: box-shadow 0.3s ease;
 }
