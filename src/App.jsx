@@ -3,24 +3,25 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 import "./App.css";
 
 function App() {
-  const [domain, setDomain] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [dominio, setDomain] = useState("");
+  const [cargando, setLoading] = useState(false);
+  const [datos, setData] = useState(null);
   const [error, setError] = useState(null);
-  const [darkMode, setDarkMode] = useState(() => {
+  const [modoOscuro, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
 
-  // Efecto para aplicar el modo oscuro al body
+  // Efecto para aplicar el modo oscuro
   useEffect(() => {
-    if (darkMode) {
+    if (modoOscuro) {
       document.body.classList.add("dark-mode");
     } else {
       document.body.classList.remove("dark-mode");
     }
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
+    localStorage.setItem("darkMode", modoOscuro);
+  }, [modoOscuro]);
 
+  // Función para enviar la solicitud de análisis
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -28,16 +29,16 @@ function App() {
     setData(null);
 
     try {
-      const response = await fetch("http://localhost:5000/analyze", {
+      const response = await fetch("http://localhost:5000/analizar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ domain }),
+        body: JSON.stringify({ domain: dominio }),
       });
 
       if (!response.ok) throw new Error("Error en el análisis");
 
-      const result = await response.json();
-      setData(result);
+      const resultado = await response.json();
+      setData(resultado);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -45,38 +46,41 @@ function App() {
     }
   };
 
+  //Interfaz de la página web
   return (
     <div className="app-container">
       {/* Botón de modo oscuro en la esquina superior derecha */}
-      <button className="dark-mode-toggle" onClick={() => setDarkMode(!darkMode)}>
-        {darkMode ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
+      <button className="dark-mode-toggle" onClick={() => setDarkMode(!modoOscuro)}>
+        {modoOscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
       </button>
 
-      {/* Logo de la empresa */}
+      {/* Logo de la empresa y título */}
       <img src="/logo.jpeg" alt="SagaTech Logo" className="logo" />
-      
-      <h1 className="title">SagaTech Analizer</h1>
+      <h1 className="title">Analizador de dominios</h1>
       
       <form onSubmit={handleSubmit} className="form-container">
+              {/* barra de busqueda */}
         <input
           type="text"
           placeholder="Ingrese el dominio (ej. https://ejemplo.com)"
-          value={domain}
+          value={dominio}
           onChange={(e) => setDomain(e.target.value)}
           className="input-field"
         />
-        <button type="submit" className="submit-btn" disabled={loading}>
-          {loading ? "Analizando..." : "Analizar"}
+              {/* Botón analizar */}
+        <button type="submit" className="submit-btn" disabled={cargando}>
+          {cargando ? "Analizando..." : "Analizar"}
         </button>
       </form>
 
       {error && <p className="error-message">{error}</p>}
 
-      {data && data.reports && (
+      {datos && datos.reports && (
         <div className="results-container">
-          <h2 className="results-title">Resultados para {data.domain}</h2>
+          <h2 className="results-title">Resultados para: {datos.domain}</h2>
+          {/* Generar gráficas */}
           <div className="reports-grid">
-            {data.reports.map((report, index) => {
+            {datos.reports.map((report, index) => {
               const formattedMetrics = report.metrics.map(m => ({
                 ...m,
                 name: m.name.toLowerCase() === "accessibility" ? "Accesibilidad" : m.name
@@ -84,6 +88,7 @@ function App() {
               return (
                 <div key={index} className="report-card">
                   <h3 className="report-subtitle">Subdominio: {report.folder}</h3>
+                  {/* Estructura gráfica */}
                   <ResponsiveContainer width="100%" height={400}>
                     <BarChart 
                       data={formattedMetrics} 

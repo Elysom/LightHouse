@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Ruta para recibir el análisis del dominio
-app.post('/analyze', (req, res) => {
+app.post('/analizar', (req, res) => {
   const { domain: dominio } = req.body;
 
   if (!dominio) {
