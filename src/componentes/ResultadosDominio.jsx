@@ -5,9 +5,10 @@ function GraficoBarra({ datos }) {
   const getColor = (value) => {
     if (value < 0.50) return "#e63946"; // Rojo
     if (value < 0.80) return "#ffb703"; // Amarillo
-    return "#2a9d8f"; // Verde
+    return "#2a9d8f";                   // Verde
   };
 
+  //Renderizado de las gráficas
   return (
     <ResponsiveContainer width="100%" height={500}>
       <BarChart data={datos} margin={{ top: 20, right: 20, left: 20, bottom: 80 }}>
@@ -30,12 +31,14 @@ function ResultadosDominio({ datos }) {
     <div className="results-container">
       <h2 className="results-title">Resultados para: {datos.domain}</h2>
       <div className="reports-grid">
+         {/* Se recorren los subdominios analizados */}
         {datos.reports.map((report, index) => {
           const formattedMetrics = report.metrics.map((m) => ({
             ...m,
             name: m.name.toLowerCase() === "accessibility" || m.name.toLowerCase() === "accesibilidad" ? "Accesibilidad" : m.name,
           }));
 
+          //Contenedor de cada subdominio
           return (
             <div key={index} className="report-card">
               <h3 className="report-subtitle">Subdominio: {report.folder}</h3>

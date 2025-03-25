@@ -22,7 +22,7 @@ app.post('/analizar', (req, res) => {
 
   console.log(`Se ha recibido una solicitud para analizar el siguiente dominio: ${dominio}`);
 
-  const ejecutar = exec(`npx unlighthouse --site ${dominio} --save false`);
+  const ejecutar = exec(`npx unlighthouse --site ${dominio} --save false --open false`);
   let output = '';
   let respuestaEnviada = false;
 
