@@ -45,12 +45,7 @@ body.dark-mode .report-subtitle {
   color: #000; /* Cambiar a negro para que se vea bien */
 }
 
-
-
-
-
-
-/* Aumentamos el ancho máximo del contenedor principal para que la gráfica tenga más espacio horizontal */
+/* Contenedor principal */
 .app-container.wide-container {
   width: 100%;
   max-width: 1200px;
@@ -62,25 +57,60 @@ body.dark-mode .report-subtitle {
   position: relative;
 }
 
-.dark-mode-toggle {
+/* Switch estilo iPhone */
+.switch {
   position: fixed;
   top: 20px;
   right: 20px;
-  background: var(--neon-blue);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 14px;
-  border-radius: 6px;
+  width: 50px;
+  height: 26px;
+  display: inline-block;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
   cursor: pointer;
-  transition: background 0.3s ease;
-  z-index: 1000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: 0.3s;
 }
 
-.dark-mode-toggle:hover {
-  background: #0088cc;
+.slider::before {
+  position: absolute;
+  content: "🌞";  /* Sol por defecto */
+  font-size: 14px;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
 }
 
+input:checked + .slider {
+  background-color: #14b8a6;
+}
+
+input:checked + .slider::before {
+  transform: translateX(24px);
+  content: "🌙";  /* Cambia a luna cuando está activado */
+}
+
+/* Títulos */
 .title {
   font-size: 32px;
   font-weight: 700;
@@ -89,6 +119,7 @@ body.dark-mode .report-subtitle {
   text-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
 }
 
+/* Formulario */
 .form-container {
   display: flex;
   flex-direction: column;
@@ -132,6 +163,7 @@ body.dark-mode .report-subtitle {
   box-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
 }
 
+/* Resultados */
 .results-container {
   margin-top: 30px;
   text-align: center;

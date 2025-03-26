@@ -7,9 +7,10 @@ function ModoOscuro({ modoOscuro, setModoOscuro }) {
   }, [modoOscuro]);
 
   return (
-    <button className="dark-mode-toggle" onClick={() => setModoOscuro(!modoOscuro)}>
-      {modoOscuro ? "☀️ Modo Claro" : "🌙 Modo Oscuro"}
-    </button>
+    <label className="switch">
+      <input type="checkbox" checked={modoOscuro} onChange={() => setModoOscuro(!modoOscuro)} />
+      <span className="slider"></span>
+    </label>
   );
 }
 
