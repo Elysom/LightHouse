@@ -2,7 +2,7 @@
 import { useState } from "react";
 import ModoOscuro from "../componentes/ModoOscuro";
 import FormularioDominio from "../componentes/FormularioDominio";
-import ResultadosDominio from "../componentes/ResultadosDominio";
+import BotonesInterfaz from "../componentes/BotonesInterfaz";
 import "./PaginaPrincipal.css";
 
 function PaginaPrincipal() {
@@ -20,7 +20,7 @@ function PaginaPrincipal() {
       <h1 className="title">Analizador Sagatech</h1>
       <FormularioDominio setDatos={setDatos} setError={setError} setAnalizando={setAnalizando} analizando={analizando} />
       {error && <p className="error-message">{error}</p>}
-      {datos && datos.reports && <ResultadosDominio datos={datos} />}
+      {datos && datos.reports && <BotonesInterfaz datos={datos} />}
     </div>
   );
 }
