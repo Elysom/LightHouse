@@ -5,6 +5,9 @@ import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
+const HOST = process.env.HOST || "0.0.0.0";
+const PORT = process.env.PORT || "5678";
+
 const app = express();
 const puerto = 5000;
 
@@ -22,7 +25,7 @@ app.post('/analizar', (req, res) => {
 
   console.log(`Se ha recibido una solicitud para analizar el siguiente dominio: ${dominio}`);
 
-  const ejecutar = exec(`npx unlighthouse --site ${dominio} --save false`);
+  const ejecutar = exec(`npx unlighthouse --site ${dominio} --host ${HOST} --port ${PORT} --save false`);
   let output = '';
   let respuestaEnviada = false;
 
