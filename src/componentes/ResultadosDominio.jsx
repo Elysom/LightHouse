@@ -11,6 +11,7 @@ function ResultadosDominio({ datos }) {
             name: m.name.toLowerCase() === "accessibility" || m.name.toLowerCase() === "accesibilidad" ? "Accesibilidad" : m.name,
           }));
 
+          //Contenedor individual de cada subdominio
           return (
             <div key={index} className="report-card">
               <h3 className="report-subtitle">Subdominio: {report.folder}</h3>

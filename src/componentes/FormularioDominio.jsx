@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function FormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
   const [dominio, setDominio] = useState("");
+  const [textoAnimado, setTextoAnimado] = useState("Analizando.");
 
+  // Función para enviar el dominio al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAnalizando(true);
@@ -24,6 +26,25 @@ function FormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
     }
   };
 
+  // Animación del botón Analizar
+  useEffect(() => {
+    if (!analizando) {
+      setTextoAnimado("Analizando.");
+      return;
+    }
+    
+    const frames = ["Analizando.", "Analizando..", "Analizando..."];
+    let i = 0;
+
+    const intervalo = setInterval(() => {
+      setTextoAnimado(frames[i % frames.length]);
+      i++;
+    }, 500);
+
+    return () => clearInterval(intervalo);
+  }, [analizando]);
+
+  //Interfaz del formulario
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <input
@@ -34,7 +55,7 @@ function FormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
         className="input-field"
       />
       <button type="submit" className="submit-btn" disabled={analizando}>
-        {analizando ? "Analizando..." : "Analizar"}
+        {analizando ? textoAnimado : "Analizar"}
       </button>
     </form>
   );

@@ -1,5 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
+//Función para obtener la media de cada métrica
 const obtenerPromedioPorNombre = (nombreMetrica, reports) => {
   const valores = reports
     .map((report) => {
@@ -20,6 +21,7 @@ function getColor(score) {
   return "#2a9d8f";
 }
 
+//Descripciones de cada estadística
 function TarjetaEstadistica({ nombre, score, descripcion }) {
   return (
     <div className="p-4 rounded-2xl shadow bg-white space-y-2">
@@ -33,7 +35,7 @@ function TarjetaEstadistica({ nombre, score, descripcion }) {
     </div>
   );
 }
-
+//Gráfica de los promedios
 function GraficoResumen({ datos }) {
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -51,7 +53,9 @@ function GraficoResumen({ datos }) {
   );
 }
 
+//Función principal
 function PromediosResultadosDominio({ datos }) {
+  //Descripciones de cada métrica
   const descripciones = {
     "Rendimiento": "First Contentful Paint (FCP): el tiempo que tarda en aparecer el primer contenido en pantalla.\nSpeed Index (SI): el tiempo que tarda el contenido visible en aparecer en pantalla.\nTime to Interactive (TTI): el tiempo necesario para que el sitio web sea interactivo y responda a las acciones del usuario.",
     "Accesibilidad": "Contraste: comprueba si los colores de su sitio web tienen suficiente contraste para ser legibles por todos los usuarios.\nNavegación: comprueba si su sitio web es fácil de navegar utilizando un teclado y un lector de pantalla.\nContenido: comprueba si el contenido de su sitio web es accesible para todos los usuarios, incluidos aquellos con necesidades específicas de accesibilidad.",
@@ -59,6 +63,7 @@ function PromediosResultadosDominio({ datos }) {
     "SEO": "Metaetiquetas: comprueba si las metaetiquetas importantes están presentes en su sitio web, como la etiqueta de título, la etiqueta de descripción y la etiqueta viewport.\nEstructura del contenido: comprueba si el contenido de su sitio web está técnicamente optimizado para los motores de búsqueda.\nEnlaces: comprueba si los enlaces de su sitio web son funcionales y están optimizados para los motores de búsqueda."
   };
 
+  //Medias de cada métrica
   const promedios = [
     { name: "Rendimiento", score: obtenerPromedioPorNombre("Rendimiento", datos.reports) },
     { name: "Accesibilidad", score: obtenerPromedioPorNombre("Accesibilidad", datos.reports) },
@@ -66,6 +71,7 @@ function PromediosResultadosDominio({ datos }) {
     { name: "SEO", score: obtenerPromedioPorNombre("SEO", datos.reports) }
   ];
 
+  //Interfaz de los promedios
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Resumen de los subdominios</h2>

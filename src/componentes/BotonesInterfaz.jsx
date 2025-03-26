@@ -36,7 +36,8 @@ function BotonesInterfaz({ datos }) {
 
         <button onClick={handleRedirect}
           className={`${baseButtonClass} bg-blue-100 text-blue-800 border border-blue-300 hover:bg-blue-200`}>
-          Ver en Unlighthouse </button>
+          Ver en Unlighthouse 
+        </button>
           
       </div>
 
