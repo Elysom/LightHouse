@@ -150,6 +150,16 @@ input:checked + .slider::before {
   box-shadow: 0px 0px 8px rgba(0, 170, 255, 0.6);
 }
 
+/* Cambiar el color del texto a negro también en modo oscuro */
+body.dark-mode .input-field {
+  color: #000; /* Cambiar texto a negro en modo oscuro */
+}
+
+/* Cambiar el color del texto del placeholder en modo oscuro */
+body.dark-mode .input-field::placeholder {
+  color: #000 !important; /* Placeholder negro en modo oscuro */
+}
+
 .submit-btn {
   background: var(--neon-blue);
   color: white;
