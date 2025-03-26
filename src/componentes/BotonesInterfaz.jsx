@@ -18,7 +18,8 @@ function BotonesInterfaz({ datos }) {
     <div className="space-y-6">
       <div className="flex justify-center gap-6 mb-6">
         
-        <button onClick={() => setVista("dominios")}
+        <button  onClick={() => setVista("dominios")}
+          style={{ margin: "3px" }}
           className={`${baseButtonClass} ${
             vista === "dominios"
               ? "bg-blue-600 text-white"
@@ -26,7 +27,8 @@ function BotonesInterfaz({ datos }) {
           }`}> Resultados individuales
         </button>
 
-        <button onClick={() => setVista("promedios")}
+        <button onClick={() => setVista("promedios")}        
+          style={{ margin: "3px" }}
           className={`${baseButtonClass} ${
             vista === "promedios"
               ? "bg-blue-600 text-white"
@@ -35,6 +37,7 @@ function BotonesInterfaz({ datos }) {
         </button>
 
         <button onClick={handleRedirect}
+          style={{ margin: "3px" }}
           className={`${baseButtonClass} bg-blue-100 text-blue-800 border border-blue-300 hover:bg-blue-200`}>
           Ver en Unlighthouse 
         </button>
