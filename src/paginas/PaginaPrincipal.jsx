@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import ModoOscuro from "../componentes/ModoOscuro";
 import FormularioDominio from "../componentes/FormularioDominio";
