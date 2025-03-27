@@ -25,7 +25,20 @@ app.post('/analizar', (req, res) => {
 
   console.log(`Se ha recibido una solicitud para analizar el siguiente dominio: ${dominio}`);
 
-  const ejecutar = exec(`npx unlighthouse --site ${dominio} --host ${HOST} --port ${PORT} --save false`);
+  const reportsDir = path.resolve(process.cwd(), '.unlighthouse');
+
+  // Comprobamos si la carpeta .unlighthouse existe y la eliminamos
+  if (fs.existsSync(reportsDir)) {
+    fs.rm(reportsDir, { recursive: true, force: true }, (err) => {
+      if (err) {
+        console.error(`Error al eliminar la carpeta ${reportsDir}:`, err);
+      } else {
+        console.log(`Carpeta ${reportsDir} eliminada correctamente.`);
+      }
+    });
+  }
+
+  const ejecutar = exec(`npx unlighthouse --site ${dominio} --server-port 7777 --host ${HOST} --save false`);
   let output = '';
   let respuestaEnviada = false;
 
@@ -37,8 +50,7 @@ app.post('/analizar', (req, res) => {
     if (!respuestaEnviada && datos.includes('Unlighthouse has finished scanning')) {
       respuestaEnviada = true;
       console.log('Mensaje final detectado. Análisis completado.');
-      const reportsDir = path.resolve(process.cwd(), '.unlighthouse');
-    
+
       // Función para buscar archivos JSON en los subdirectorios
       const encontrarJsons = (dir) => {
         let resultados = [];
@@ -54,19 +66,19 @@ app.post('/analizar', (req, res) => {
         }
         return resultados;
       };
-    
+
       const archivoJson = encontrarJsons(reportsDir);
       if (archivoJson.length === 0) {
         return res.status(404).json({ error: "No se encontró ningún archivo JSON en .unlighthouse" });
       }
-    
+
       const resultadosObtenidos = [];
-    
+
       archivoJson.forEach(file => {
         try {
           const datos = fs.readFileSync(file, 'utf8');
           const puntuacion = JSON.parse(datos);
-    
+
           if (puntuacion.categories) {
             const metricas = [
               { name: 'Rendimiento', score: puntuacion.categories.performance?.score ?? "N/A" },
@@ -74,7 +86,7 @@ app.post('/analizar', (req, res) => {
               { name: 'Buenas Prácticas', score: puntuacion.categories['best-practices']?.score ?? "N/A" },
               { name: 'SEO', score: puntuacion.categories.seo?.score ?? "N/A" },
             ];
-    
+
             // Obtener el nombre de la carpeta padre
             const carpetaPadre = path.basename(path.dirname(file));
         
@@ -87,22 +99,13 @@ app.post('/analizar', (req, res) => {
           console.error("Error al procesar el archivo:", file, error);
         }
       });
-    
+
       if (resultadosObtenidos.length === 0) {
         return res.status(404).json({ error: "No se encontraron métricas válidas en los archivos JSON" });
       }
       
       // Enviar respuesta con los resultados
       res.json({ domain: dominio, reports: resultadosObtenidos });
-      
-      // Eliminar la carpeta generada por unlighthouse una vez generadas nuestras gráficas
-      fs.rm(reportsDir, { recursive: true, force: true }, (err) => {
-        if (err) {
-          console.error(`Error al eliminar la carpeta ${reportsDir}:`, err);
-        } else {
-          console.log(`Carpeta ${reportsDir} eliminada correctamente.`);
-        }
-      });
     }
   });
 
