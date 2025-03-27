@@ -4,9 +4,26 @@ function FormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
   const [dominio, setDominio] = useState("");
   const [textoAnimado, setTextoAnimado] = useState("Analizando.");
 
+  // Función para validar que el string es una URL válida
+  const validarDominio = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   // Función para enviar el dominio al servidor
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Comprobamos si lo introducido es un dominio válido
+    if (!validarDominio(dominio)) {
+      setError("**Por favor, ingresa un dominio válido (ej. https://ejemplo.com)**");
+      return;
+    }
+    
     setAnalizando(true);
     setError(null);
     setDatos(null);
@@ -44,7 +61,7 @@ function FormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
     return () => clearInterval(intervalo);
   }, [analizando]);
 
-  //Interfaz del formulario
+  // Interfaz del formulario
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <input
