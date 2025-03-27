@@ -40,9 +40,8 @@ body.dark-mode {
   color: var(--text-color);
 }
 
-/* Cambiar color de los títulos de las gráficas cuando se activa el modo oscuro */
 body.dark-mode .report-subtitle {
-  color: #000; /* Cambiar a negro para que se vea bien */
+  color: #000;
 }
 
 /* Contenedor principal */
@@ -57,7 +56,6 @@ body.dark-mode .report-subtitle {
   position: relative;
 }
 
-/* Switch estilo iPhone */
 .switch {
   position: fixed;
   top: 20px;
@@ -87,7 +85,7 @@ body.dark-mode .report-subtitle {
 
 .slider::before {
   position: absolute;
-  content: "🌞";  /* Sol por defecto */
+  content: "🌞";
   font-size: 14px;
   height: 20px;
   width: 20px;
@@ -107,7 +105,7 @@ input:checked + .slider {
 
 input:checked + .slider::before {
   transform: translateX(24px);
-  content: "🌙";  /* Cambia a luna cuando está activado */
+  content: "🌙";
 }
 
 /* Títulos */
@@ -142,7 +140,7 @@ input:checked + .slider::before {
 }
 
 .input-field::placeholder {
-  color: #000 !important; /* Cambiar color del placeholder a negro */
+  color: #000 !important;
 }
 
 .input-field:focus {
@@ -151,14 +149,12 @@ input:checked + .slider::before {
   box-shadow: 0px 0px 8px rgba(0, 170, 255, 0.6);
 }
 
-/* Cambiar el color del texto a negro también en modo oscuro */
 body.dark-mode .input-field {
-  color: #000; /* Cambiar texto a negro en modo oscuro */
+  color: #000;
 }
 
-/* Cambiar el color del texto del placeholder en modo oscuro */
 body.dark-mode .input-field::placeholder {
-  color: #000 !important; /* Placeholder negro en modo oscuro */
+  color: #000 !important;
 }
 
 .submit-btn {
@@ -180,7 +176,6 @@ body.dark-mode .input-field::placeholder {
   box-shadow: 0px 0px 10px rgba(0, 170, 255, 0.7);
 }
 
-/* Resultados */
 .results-container {
   margin-top: 30px;
   text-align: center;
@@ -209,7 +204,7 @@ body.dark-mode .input-field::placeholder {
   background: white;
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 20px;
+  padding: 10px;
   box-shadow: 0px 0px 15px rgba(0, 170, 255, 0.3);
   transition: box-shadow 0.3s ease;
 }

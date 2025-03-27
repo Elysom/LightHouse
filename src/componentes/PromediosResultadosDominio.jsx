@@ -21,25 +21,40 @@ function getColor(score) {
   return "#2a9d8f";
 }
 
-//Descripciones de cada estadística
+//Tarjeta descriptiva de cada estadística
 function TarjetaEstadistica({ nombre, score, descripcion }) {
+  const puntos = descripcion.split("\n");
   return (
     <div className="p-4 rounded-2xl shadow bg-white space-y-2">
       <div className="flex items-center justify-between">
-        <h4 className="text-lg font-semibold" style={{ color: typeof score === "number" ? getColor(score) : '#999' }}>{nombre}</h4>
+        <h4 className="text-lg font-semibold" style={{ color: typeof score === "number" ? getColor(score) : '#999' }}>
+          {nombre}
+        </h4>
         <span className="text-lg font-mono font-bold">
           {typeof score === "number" ? `${(score * 100).toFixed(0)}%` : "N/A"}
         </span>
       </div>
-      <p className="text-sm text-gray-600 whitespace-pre-line">{descripcion}</p>
+      <div className="text-sm text-gray-600 space-y-1 pl-1 pr-2">
+        {puntos.map((punto, index) => {
+          const [titulo, ...resto] = punto.split(":");
+          const contenido = resto.join(":").trim();
+          return (
+            <p key={index} className="text-justify">
+              <strong>{titulo}:</strong> {contenido}
+            </p>
+          );
+        })}
+      </div>
     </div>
   );
 }
+
+
 //Gráfica de los promedios
 function GraficoResumen({ datos }) {
   return (
     <ResponsiveContainer width="100%" height={400}>
-      <BarChart data={datos} margin={{ top: 20, right: 20, left: 20, bottom: 80 }}>
+      <BarChart data={datos} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
         <XAxis dataKey="name" stroke="#555" tick={{ fontSize: 12 }} tickMargin={10} interval={0} />
         <YAxis stroke="#555" />
         <Tooltip />
@@ -71,21 +86,23 @@ function PromediosResultadosDominio({ datos }) {
     { name: "SEO", score: obtenerPromedioPorNombre("SEO", datos.reports) }
   ];
 
-  //Interfaz de los promedios
-  return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Resumen de los subdominios</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {promedios.map((m, i) => (
-          <TarjetaEstadistica key={i} nombre={m.name} score={m.score} descripcion={descripciones[m.name]} />
-        ))}
-      </div>
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-2">Gráfico de los promedios</h3>
+// Interfaz de los promedios
+return (
+  <div className="space-y-6 pb-10">
+    <h2 className="text-2xl font-bold">Resumen de los subdominios</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {promedios.map((m, i) => (
+        <TarjetaEstadistica key={i} nombre={m.name} score={m.score} descripcion={descripciones[m.name]} />
+      ))}
+    </div>
+    <div className="mt-16">
+      <h3 className="text-xl font-semibold mb-2">Gráfico de los promedios</h3>
+      <div className="report-card">
         <GraficoResumen datos={promedios} />
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default PromediosResultadosDominio;
