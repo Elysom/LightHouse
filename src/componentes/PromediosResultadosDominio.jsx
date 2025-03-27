@@ -16,9 +16,9 @@ const obtenerPromedioPorNombre = (nombreMetrica, reports) => {
 };
 
 function getColor(score) {
-  if (score < 0.5) return "#e63946";
-  if (score < 0.8) return "#ffb703";
-  return "#2a9d8f";
+  if (score < 0.50) return "#e63946"; // Rojo
+  if (score < 0.80) return "#ffb703"; // Amarillo
+  return "#2a9d8f";                   // Verde
 }
 
 //Tarjeta descriptiva de cada estadística
@@ -48,7 +48,6 @@ function TarjetaEstadistica({ nombre, score, descripcion }) {
     </div>
   );
 }
-
 
 //Gráfica de los promedios
 function GraficoResumen({ datos }) {
