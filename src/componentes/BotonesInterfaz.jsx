@@ -5,9 +5,30 @@ import PromediosResultadosDominio from "./PromediosResultadosDominio";
 function BotonesInterfaz({ datos }) {
   const [vista, setVista] = useState("dominios");
 
-  // Función para redirigir al endpoint dinámico que encuentra unlighthouse.html
-  const handleRedirect = () => {
-    window.open("http://localhost:5000/ver-unlighthouse", "_blank");
+  // Función para redirigir al archivo unlighthouse.html a través del endpoint del servidor
+  const handleRedirect = async () => {
+    try {
+      console.log("Solicitando archivo unlighthouse.html...");
+      const response = await fetch("http://localhost:5000/api/encontrar-unlighthouse");
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Respuesta del endpoint:", data);
+        if (data.url) {
+          // Si data.url no comienza con una '/', se la agrega
+          const relativeUrl = data.url.startsWith('/') ? data.url : `/${data.url}`;
+          // Concatenamos la URL base del servidor con la ruta relativa devuelta por el endpoint
+          const fullUrl = `http://localhost:5000${relativeUrl}`;
+          console.log("Abriendo URL:", fullUrl);
+          window.open(fullUrl, "_blank");
+        } else {
+          console.error("La respuesta no contiene la propiedad 'url'.");
+        }
+      } else {
+        console.error("Error en la respuesta del servidor:", response.status);
+      }
+    } catch (error) {
+      console.error("Error al buscar el archivo:", error);
+    }
   };
 
   const baseButtonClass =
@@ -16,7 +37,7 @@ function BotonesInterfaz({ datos }) {
   return (
     <div className="space-y-6">
       <div className="flex justify-center gap-6 mb-6">
-        <button 
+        <button
           onClick={() => setVista("dominios")}
           style={{ margin: "3px" }}
           className={`${baseButtonClass} ${
@@ -28,7 +49,7 @@ function BotonesInterfaz({ datos }) {
           Resultados individuales
         </button>
 
-        <button 
+        <button
           onClick={() => setVista("promedios")}
           style={{ margin: "3px" }}
           className={`${baseButtonClass} ${
@@ -40,7 +61,7 @@ function BotonesInterfaz({ datos }) {
           Resultados (Promedios)
         </button>
 
-        <button 
+        <button
           onClick={handleRedirect}
           style={{ margin: "3px" }}
           className={`${baseButtonClass} bg-blue-100 text-blue-800 border border-blue-300 hover:bg-blue-200`}

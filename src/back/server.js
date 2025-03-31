@@ -7,15 +7,12 @@ import path from 'path';
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = process.env.PORT || "5678";
-
 const app = express();
 const puerto = 5000;
 
 // Configuración de CORS y middleware para analizar JSON
 app.use(cors());
 app.use(bodyParser.json());
-
-
 
 // Ruta para recibir el análisis del dominio
 app.post('/analizar', (req, res) => {
@@ -27,11 +24,10 @@ app.post('/analizar', (req, res) => {
 
   console.log(`Se ha recibido una solicitud para analizar el siguiente dominio: ${dominio}`);
 
-  const reportsDir = path.resolve(process.cwd(), '../../public/');
+  const reportsDir = path.resolve(process.cwd(), '../../public/lighthouse');
 
-  // Asumiendo que 'reportsDir' apunta a la carpeta public, o puedes usar otra ruta:
-app.use(express.static(path.resolve(process.cwd(), '../../public')));
-
+  // Servir la carpeta public
+  app.use(express.static(path.resolve(process.cwd(), '../../public/lighthouse')));
 
   // Comprobamos si la carpeta .unlighthouse existe y la eliminamos
   if (fs.existsSync(reportsDir)) {
@@ -44,7 +40,7 @@ app.use(express.static(path.resolve(process.cwd(), '../../public')));
     });
   }
 
-  const ejecutar = exec(`npx unlighthouse --site ${dominio} --output-path ../../public/ --host ${HOST} --save false`);
+  const ejecutar = exec(`npx unlighthouse --site ${dominio} --output-path ../../public/lighthouse --host ${HOST} --save false`);
   let output = '';
   let respuestaEnviada = false;
 
@@ -52,12 +48,11 @@ app.use(express.static(path.resolve(process.cwd(), '../../public')));
   ejecutar.stdout.on('data', (datos) => {
     output += datos;
 
-    // Verificar si se ha impreso el mensaje de finalización
     if (!respuestaEnviada && datos.includes('Unlighthouse has finished scanning')) {
       respuestaEnviada = true;
       console.log('Mensaje final detectado. Análisis completado.');
 
-      // Función para buscar archivos JSON en los subdirectorios
+      // Función recursiva para buscar archivos JSON en subdirectorios
       const encontrarJsons = (dir) => {
         let resultados = [];
         const jsons = fs.readdirSync(dir);
@@ -93,7 +88,6 @@ app.use(express.static(path.resolve(process.cwd(), '../../public')));
               { name: 'SEO', score: puntuacion.categories.seo?.score ?? "N/A" },
             ];
 
-            // Obtener el nombre de la carpeta padre
             const carpetaPadre = path.basename(path.dirname(file));
         
             resultadosObtenidos.push({
@@ -110,17 +104,14 @@ app.use(express.static(path.resolve(process.cwd(), '../../public')));
         return res.status(404).json({ error: "No se encontraron métricas válidas en los archivos JSON" });
       }
       
-      // Enviar respuesta con los resultados
       res.json({ domain: dominio, reports: resultadosObtenidos });
     }
   });
 
-  // Manejo de errores en stderr
   ejecutar.stderr.on('data', (data) => {
     console.error(`stderr: ${data}`);
   });
 
-  // Por si el proceso termina y no se detecta un mensaje final
   ejecutar.on('close', (code) => {
     console.log(`El proceso finalizó con el siguiente código ${code}`);
     if (!respuestaEnviada) {
@@ -129,7 +120,39 @@ app.use(express.static(path.resolve(process.cwd(), '../../public')));
   });
 });
 
-// Iniciar servidor
+//  endpoint para encontrar el archivo lighthouse.html
+app.get('/api/encontrar-unlighthouse', (req, res) => {
+  try {
+    const publicFolder = path.resolve(process.cwd(), '../../public/lighthouse');
+    const encontrarUnlighthouseHtml = (directorio) => {
+      let resultados = [];
+      const elementos = fs.readdirSync(directorio);
+      for (const elemento of elementos) {
+        const rutaElemento = path.join(directorio, elemento);
+        const stats = fs.statSync(rutaElemento);
+        if (stats.isDirectory()) {
+          resultados = resultados.concat(encontrarUnlighthouseHtml(rutaElemento));
+        } else if (stats.isFile() && elemento === "lighthouse.html") {
+          resultados.push(rutaElemento);
+        }
+      }
+      return resultados;
+    };
+
+    const resultados = encontrarUnlighthouseHtml(publicFolder);
+    if (resultados.length > 0) {
+      const filePath = resultados[0];
+      // Se remueve la parte de la ruta correspondiente a la carpeta public
+      const relativePath = filePath.replace(publicFolder, '');
+      res.json({ url: relativePath });
+    } else {
+      res.status(404).json({ error: "Archivo unlighthouse.html no encontrado." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(puerto, () => {
   console.log(`El servidor está escuchando en http://localhost:${puerto}`);
 });
