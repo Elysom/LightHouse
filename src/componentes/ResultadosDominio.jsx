@@ -24,7 +24,7 @@ function GraficoBarra({ datos }) {
   );
 }
 
-// Componente principal de resultados
+// Interfaz para mostrar los resultados
 function ResultadosDominio({ datos }) {
   return (
     <div className="results-container">

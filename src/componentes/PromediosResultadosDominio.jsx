@@ -1,6 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
-//Función para obtener la media de cada métrica
+// Función para obtener la media de cada métrica
 const obtenerPromedioPorNombre = (nombreMetrica, reports) => {
   const valores = reports
     .map((report) => {
@@ -15,13 +15,14 @@ const obtenerPromedioPorNombre = (nombreMetrica, reports) => {
   return parseFloat(promedio.toFixed(2));
 };
 
+// Componente para manejar la gráfica con colores dinámicos
 function getColor(score) {
   if (score < 0.50) return "#e63946"; // Rojo
   if (score < 0.80) return "#ffb703"; // Amarillo
   return "#2a9d8f";                   // Verde
 }
 
-//Tarjeta descriptiva de cada estadística
+// Tarjeta descriptiva de cada estadística
 function TarjetaEstadistica({ nombre, score, descripcion }) {
   const puntos = descripcion.split("\n");
   return (
@@ -49,7 +50,7 @@ function TarjetaEstadistica({ nombre, score, descripcion }) {
   );
 }
 
-//Gráfica de los promedios
+// Gráfica de los promedios
 function GraficoResumen({ datos }) {
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -67,17 +68,17 @@ function GraficoResumen({ datos }) {
   );
 }
 
-//Función principal
+// Función principal
 function PromediosResultadosDominio({ datos }) {
-  //Descripciones de cada métrica
-  const descripciones = {
+  // Parámetros de cada métrica
+  const parametros = {
     "Rendimiento": "First Contentful Paint (FCP): el tiempo que tarda en aparecer el primer contenido en pantalla.\nSpeed Index (SI): el tiempo que tarda el contenido visible en aparecer en pantalla.\nTime to Interactive (TTI): el tiempo necesario para que el sitio web sea interactivo y responda a las acciones del usuario.",
     "Accesibilidad": "Contraste: comprueba si los colores de su sitio web tienen suficiente contraste para ser legibles por todos los usuarios.\nNavegación: comprueba si su sitio web es fácil de navegar utilizando un teclado y un lector de pantalla.\nContenido: comprueba si el contenido de su sitio web es accesible para todos los usuarios, incluidos aquellos con necesidades específicas de accesibilidad.",
     "Buenas Prácticas": "Uso de HTTPS: comprueba si su sitio web utiliza HTTPS para proteger los datos de los usuarios.\nOptimización de imágenes: comprueba si las imágenes de su sitio web están optimizadas para reducir el tiempo de carga.\nUso de fuentes web: comprueba si su sitio web utiliza fuentes web para mejorar la legibilidad y la velocidad de carga.",
     "SEO": "Metaetiquetas: comprueba si las metaetiquetas importantes están presentes en su sitio web, como la etiqueta de título, la etiqueta de descripción y la etiqueta viewport.\nEstructura del contenido: comprueba si el contenido de su sitio web está técnicamente optimizado para los motores de búsqueda.\nEnlaces: comprueba si los enlaces de su sitio web son funcionales y están optimizados para los motores de búsqueda."
   };
 
-  //Medias de cada métrica
+  // Medias de cada métrica
   const promedios = [
     { name: "Rendimiento", score: obtenerPromedioPorNombre("Rendimiento", datos.reports) },
     { name: "Accesibilidad", score: obtenerPromedioPorNombre("Accesibilidad", datos.reports) },
@@ -91,7 +92,7 @@ return (
     <h2 className="text-2xl font-bold">Resumen de los subdominios</h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {promedios.map((m, i) => (
-        <TarjetaEstadistica key={i} nombre={m.name} score={m.score} descripcion={descripciones[m.name]} />
+        <TarjetaEstadistica key={i} nombre={m.name} score={m.score} descripcion={parametros[m.name]} />
       ))}
     </div>
     <div className="mt-16">

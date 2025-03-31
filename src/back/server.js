@@ -6,9 +6,8 @@ import fs from 'fs';
 import path from 'path';
 
 const HOST = process.env.HOST || "0.0.0.0";
-const PORT = process.env.PORT || "5678";
 const app = express();
-const puerto = 5000;
+const puertoCliente = 5000;
 
 // Configuración de CORS y middleware para analizar JSON
 app.use(cors());
@@ -21,15 +20,13 @@ app.post('/analizar', (req, res) => {
   if (!dominio) {
     return res.status(400).json({ error: 'Se necesita un dominio' });
   }
-
   console.log(`Se ha recibido una solicitud para analizar el siguiente dominio: ${dominio}`);
 
   const reportsDir = path.resolve(process.cwd(), '../../public/lighthouse');
-
-  // Servir la carpeta public
+  // Servir en la carpeta public
   app.use(express.static(path.resolve(process.cwd(), '../../public/lighthouse')));
 
-  // Comprobamos si la carpeta .unlighthouse existe y la eliminamos
+  // Comprobamos si hay datos antiguos en la carpeta lighthouse (public) y los eliminamos
   if (fs.existsSync(reportsDir)) {
     fs.rm(reportsDir, { recursive: true, force: true }, (err) => {
       if (err) {
@@ -40,7 +37,8 @@ app.post('/analizar', (req, res) => {
     });
   }
 
-  const ejecutar = exec(`npx unlighthouse --site ${dominio} --output-path ../../public/lighthouse --host ${HOST} --save false`);
+  //Comando unlighthouse
+  const ejecutar = exec(`set BROWSER=none && npx unlighthouse --site ${dominio} --output-path ../../public/lighthouse --host ${HOST}`);
   let output = '';
   let respuestaEnviada = false;
 
@@ -73,8 +71,8 @@ app.post('/analizar', (req, res) => {
         return res.status(404).json({ error: "No se encontró ningún archivo JSON en .unlighthouse" });
       }
 
+      // Procesar los archivos JSON encontrados y enviarlos como respuesta
       const resultadosObtenidos = [];
-
       archivoJson.forEach(file => {
         try {
           const datos = fs.readFileSync(file, 'utf8');
@@ -103,7 +101,7 @@ app.post('/analizar', (req, res) => {
       if (resultadosObtenidos.length === 0) {
         return res.status(404).json({ error: "No se encontraron métricas válidas en los archivos JSON" });
       }
-      
+      //Respuesta para el cliente
       res.json({ domain: dominio, reports: resultadosObtenidos });
     }
   });
@@ -120,8 +118,8 @@ app.post('/analizar', (req, res) => {
   });
 });
 
-//  endpoint para encontrar el archivo lighthouse.html
-app.get('/api/encontrar-unlighthouse', (req, res) => {
+ // Endpoint para encontrar el archivo lighthouse.html
+ app.get('/api/encontrar-unlighthouse', (req, res) => {
   try {
     const publicFolder = path.resolve(process.cwd(), '../../public/lighthouse');
     const encontrarUnlighthouseHtml = (directorio) => {
@@ -151,8 +149,9 @@ app.get('/api/encontrar-unlighthouse', (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-});
+ });
 
-app.listen(puerto, () => {
-  console.log(`El servidor está escuchando en http://localhost:${puerto}`);
-});
+ //Escuchando en el puerto del cliente
+ app.listen(puertoCliente, () => {
+  console.log(`El servidor está escuchando en http://localhost:${puertoCliente}`);
+ });

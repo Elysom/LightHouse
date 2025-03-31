@@ -31,10 +31,12 @@ function BotonesInterfaz({ datos }) {
     }
   };
 
+  // Estilo de los botones
   const baseButtonClass =
     "px-4 py-2 rounded font-semibold shadow transition-colors duration-200";
 
-  return (
+   // Interfaz con los botones
+   return (
     <div className="space-y-6">
       <div className="flex justify-center gap-6 mb-6">
         <button
@@ -77,6 +79,6 @@ function BotonesInterfaz({ datos }) {
       )}
     </div>
   );
-}
+ }
 
 export default BotonesInterfaz;
