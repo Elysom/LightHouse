@@ -15,6 +15,8 @@ const puerto = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+
+
 // Ruta para recibir el análisis del dominio
 app.post('/analizar', (req, res) => {
   const { domain: dominio } = req.body;
@@ -25,7 +27,11 @@ app.post('/analizar', (req, res) => {
 
   console.log(`Se ha recibido una solicitud para analizar el siguiente dominio: ${dominio}`);
 
-  const reportsDir = path.resolve(process.cwd(), '.unlighthouse');
+  const reportsDir = path.resolve(process.cwd(), '../../public/');
+
+  // Asumiendo que 'reportsDir' apunta a la carpeta public, o puedes usar otra ruta:
+app.use(express.static(path.resolve(process.cwd(), '../../public')));
+
 
   // Comprobamos si la carpeta .unlighthouse existe y la eliminamos
   if (fs.existsSync(reportsDir)) {
@@ -38,7 +44,7 @@ app.post('/analizar', (req, res) => {
     });
   }
 
-  const ejecutar = exec(`npx unlighthouse --site ${dominio} --server-port 7777 --host ${HOST} --save false`);
+  const ejecutar = exec(`npx unlighthouse --site ${dominio} --output-path ../../public/ --host ${HOST} --save false`);
   let output = '';
   let respuestaEnviada = false;
 
