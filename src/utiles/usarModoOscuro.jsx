@@ -6,4 +6,5 @@ function usarModoOscuro(modoOscuro) {
       localStorage.setItem("darkMode", modoOscuro);
     }, [modoOscuro]);
 }
+
 export default usarModoOscuro;
