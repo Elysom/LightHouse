@@ -1,6 +1,10 @@
+import { useState } from "react";
 import Grafica from "./Grafica";
+import MostrarDatos from "./MostrarDatos";
 
 function ResultadosDominio({ datos }) {
+  const [mostrarValores, setMostrarValores] = useState(false);
+
   return (
     <div className="results-container">
       <h2 className="results-title">Resultados para: {datos.domain}</h2>
@@ -13,8 +17,9 @@ function ResultadosDominio({ datos }) {
 
           return (
             <div key={index} className="report-card">
+              <MostrarDatos mostrarValores={mostrarValores} setMostrarValores={setMostrarValores} />
               <h3 className="report-subtitle">Subdominio: {report.folder}</h3>
-              <Grafica datos={formattedMetrics} height={500} />
+              <Grafica datos={formattedMetrics} height={500} mostrarValores={mostrarValores} />
             </div>
           );
         })}
