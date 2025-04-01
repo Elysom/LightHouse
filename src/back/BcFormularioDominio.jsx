@@ -1,9 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import LoadingPopup from "../componentes/LoadingPopup";
 import FormularioDominio from "../componentes/FormularioDominio";
 
 function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
   const [dominio, setDominio] = useState("");
-  const [textoAnimado, setTextoAnimado] = useState("Analizando.");
+  const [textoAnimado, setTextoAnimado] = useState("Analizando");
+  const [progress, setProgress] = useState(0);
+  const intervalRef = useRef(null);
+
+  
+  
 
   // Validación para el dominio ingresado por el usuario
   const validarDominio = (url) => {
@@ -15,17 +21,37 @@ function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) 
     }
   };
 
-  // Enviar petición al servidor
+  // Inicia la simulación del progreso
+  const startProgress = () => {
+    setProgress(0);
+    intervalRef.current = setInterval(() => {
+      setProgress((prev) => (prev < 95 ? prev + 5 : prev));
+    }, 150);
+  };
+
+  // Finaliza la simulación del progreso
+  const stopProgress = () => {
+    clearInterval(intervalRef.current);
+    setProgress(100);
+    setTimeout(() => {
+      setProgress(0);
+    }, 800);
+  };
+
+  // Función para enviar el dominio al servidor y mostrar el popup de carga
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
+    // Comprobamos si lo introducido es un dominio válido
     if (!validarDominio(dominio)) {
-      setError("**Por favor, ingresa un https válido (ej. https://ejemplo.com)**");
+      setError("**Por favor, ingresa un dominio válido (ej. https://ejemplo.com)**");
       return;
     }
+    
     setAnalizando(true);
     setError(null);
     setDatos(null);
+    startProgress();
 
     try {
       const response = await fetch("http://localhost:5000/analizar", {
@@ -38,37 +64,28 @@ function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) 
     } catch (err) {
       setError(err.message);
     } finally {
+      stopProgress();
       setAnalizando(false);
     }
   };
-
-  // Animación del botón Analizando
-  useEffect(() => {
-    if (!analizando) {
-      setTextoAnimado("Analizando.");
-      return;
-    }
-
-    const frames = ["Analizando.", "Analizando..", "Analizando..."];
-    let i = 0;
-    const intervalo = setInterval(() => {
-      setTextoAnimado(frames[i % frames.length]);
-      i++;
-    }, 500);
-
-    return () => clearInterval(intervalo);
-  }, [analizando]);
+  
 
   // Renderizado de la interfaz FormularioDominio
   return (
-    <FormularioDominio
-      setDominio={setDominio}
-      dominio={dominio}
-      handleSubmit={handleSubmit}
-      analizando={analizando}
-      textoAnimado={textoAnimado}
-    />
+    <>
+      {/* Muestra el popup de carga mientras se está analizando */}
+      {analizando && <LoadingPopup progress={progress} />}
+  
+      <FormularioDominio 
+        setDominio={setDominio}
+        dominio={dominio}
+        handleSubmit={handleSubmit}
+        analizando={analizando}
+        textoAnimado={textoAnimado}
+      />
+    </>
   );
+  
 }
 
 export default BcFormularioDominio;

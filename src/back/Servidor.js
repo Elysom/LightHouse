@@ -36,9 +36,9 @@ app.post('/analizar', (req, res) => {
       }
     });
   }
-
+  
   //Comando unlighthouse
-  const ejecutar = exec(`set BROWSER=none && npx unlighthouse --site ${dominio} --output-path ../../public/lighthouse --host ${HOST}`);
+  const ejecutar = exec(` npx unlighthouse --site ${dominio} --output-path ../../public/lighthouse --host ${HOST}`);
   let output = '';
   let respuestaEnviada = false;
 
@@ -119,37 +119,37 @@ app.post('/analizar', (req, res) => {
 });
 
  // Endpoint para encontrar el archivo lighthouse.html
- app.get('/api/encontrar-unlighthouse', (req, res) => {
-  try {
-    const publicFolder = path.resolve(process.cwd(), '../../public/lighthouse');
-    const encontrarUnlighthouseHtml = (directorio) => {
-      let resultados = [];
-      const elementos = fs.readdirSync(directorio);
-      for (const elemento of elementos) {
-        const rutaElemento = path.join(directorio, elemento);
-        const stats = fs.statSync(rutaElemento);
-        if (stats.isDirectory()) {
-          resultados = resultados.concat(encontrarUnlighthouseHtml(rutaElemento));
-        } else if (stats.isFile() && elemento === "lighthouse.html") {
-          resultados.push(rutaElemento);
-        }
-      }
-      return resultados;
-    };
+//  app.get('/api/encontrar-unlighthouse', (req, res) => {
+//   try {
+//     const publicFolder = path.resolve(process.cwd(), '../../public/lighthouse');
+//     const encontrarUnlighthouseHtml = (directorio) => {
+//       let resultados = [];
+//       const elementos = fs.readdirSync(directorio);
+//       for (const elemento of elementos) {
+//         const rutaElemento = path.join(directorio, elemento);
+//         const stats = fs.statSync(rutaElemento);
+//         if (stats.isDirectory()) {
+//           resultados = resultados.concat(encontrarUnlighthouseHtml(rutaElemento));
+//         } else if (stats.isFile() && elemento === "lighthouse.html") {
+//           resultados.push(rutaElemento);
+//         }
+//       }
+//       return resultados;
+//     };
 
-    const resultados = encontrarUnlighthouseHtml(publicFolder);
-    if (resultados.length > 0) {
-      const filePath = resultados[0];
-      // Se remueve la parte de la ruta correspondiente a la carpeta public
-      const relativePath = filePath.replace(publicFolder, '');
-      res.json({ url: relativePath });
-    } else {
-      res.status(404).json({ error: "Archivo unlighthouse.html no encontrado." });
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
- });
+//     const resultados = encontrarUnlighthouseHtml(publicFolder);
+//     if (resultados.length > 0) {
+//       const filePath = resultados[0];
+//       // Se remueve la parte de la ruta correspondiente a la carpeta public
+//       const relativePath = filePath.replace(publicFolder, '');
+//       res.json({ url: relativePath });
+//     } else {
+//       res.status(404).json({ error: "Archivo unlighthouse.html no encontrado." });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+//  });
 
  //Escuchando en el puerto del cliente
  app.listen(puertoCliente, () => {

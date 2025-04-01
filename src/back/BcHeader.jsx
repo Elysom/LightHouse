@@ -1,44 +1,63 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Header from "../componentes/Header";
+import LoadingPopup from "../componentes/LoadingPopup";
 
 function BcHeader({ datos }) {
-  // Estado para controlar qué vista mostrar
   const [vista, setVista] = useState("dominios");
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const intervalRef = useRef(null);
 
-  // Función para redirigir al archivo unlighthouse.html a través del endpoint del servidor
-  const handleRedirect = async () => {
+  // Inicia la simulación del progreso
+  const startProgress = () => {
+    setProgress(0);
+    intervalRef.current = setInterval(() => {
+      setProgress((prev) => (prev < 95 ? prev + 5 : prev));
+    }, 150);
+  };
+
+  // Finaliza la simulación del progreso
+  const stopProgress = () => {
+    clearInterval(intervalRef.current);
+    setProgress(100);
+    setTimeout(() => {
+      setProgress(0);
+      setLoading(false);
+    }, 800);
+  };
+  
+  // Función para ejecutar el análisis (simulación) y mostrar la barra de carga
+  const handleVerUnlighthouse = async () => {
+    if (!datos || !datos.domain) {
+      console.error("Debe analizar el dominio primero.");
+      return;
+    }
     try {
-      console.log("Solicitando archivo unlighthouse.html...");
-      const response = await fetch("http://localhost:5000/api/encontrar-unlighthouse");
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Respuesta del endpoint:", data);
-        if (data.url) {
-          // Si data.url no comienza con una '/', se la agrega
-          const relativeUrl = data.url.startsWith('/') ? data.url : `/${data.url}`;
-          // Concatenamos la URL base del servidor con la ruta relativa devuelta por el endpoint
-          const fullUrl = `http://localhost:5000${relativeUrl}`;
-          console.log("Abriendo URL:", fullUrl);
-          window.open(fullUrl, "_blank");
-        } else {
-          console.error("La respuesta no contiene la propiedad 'url'.");
-        }
-      } else {
-        console.error("Error en la respuesta del servidor:", response.status);
-      }
+      setLoading(true);
+      startProgress();
+      console.log("Ejecutando análisis para Unlighthouse...");
+      
+      const responseAnalizar = await fetch("http://localhost:5000/analizar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain: datos.domain }),
+      });
+      
+      if (!responseAnalizar.ok) throw new Error("Error en el análisis");
+      stopProgress();
     } catch (error) {
-      console.error("Error al buscar el archivo:", error);
+      console.error("Error al ejecutar análisis para Unlighthouse:", error);
+      clearInterval(intervalRef.current);
+      setLoading(false);
+      setProgress(0);
     }
   };
 
-  // Renderizado de la interfaz Header con la vista seleccionada
   return (
-    <Header
-      datos={datos}
-      vista={vista}
-      setVista={setVista}
-      handleRedirect={handleRedirect}
-    />
+    <>
+      {loading && <LoadingPopup progress={progress} />}
+      <Header datos={datos} vista={vista} setVista={setVista} handleRedirect={handleVerUnlighthouse} />
+    </>
   );
 }
 
