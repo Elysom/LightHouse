@@ -8,25 +8,26 @@ function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) 
   const [progress, setProgress] = useState(0);
   const intervalRef = useRef(null);
 
-  
-  
-
   // Validación para el dominio ingresado por el usuario
   const validarDominio = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
+    const regex = /^(https?:\/\/)/; // Verifica si la URL comienza con http:// o https://
+    return regex.test(url);
   };
 
   // Inicia la simulación del progreso
   const startProgress = () => {
     setProgress(0);
+    setTextoAnimado("Analizando"); // Mantén el texto de "Analizando" al principio
     intervalRef.current = setInterval(() => {
-      setProgress((prev) => (prev < 95 ? prev + 5 : prev));
-    }, 150);
+      setProgress((prev) => {
+        if (prev < 95) {
+          return prev + 5;
+        } else {
+          setTextoAnimado("Esperando respuesta de Unlighthouse"); // Cambia solo cuando llegue al 95%
+          return prev;
+        }
+      });
+    }, 1000);
   };
 
   // Finaliza la simulación del progreso
@@ -42,25 +43,40 @@ function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Comprobamos si lo introducido es un dominio válido
+    // Comprobamos si lo introducido es un dominio válido con https:// o http://
     if (!validarDominio(dominio)) {
-      setError("**Por favor, ingresa un dominio válido (ej. https://ejemplo.com)**");
+      setError("**Por favor, ingresa un dominio válido con http:// o https:// (ej. https://ejemplo.com)**");
       return;
     }
-    
+
     setAnalizando(true);
     setError(null);
     setDatos(null);
     startProgress();
 
     try {
-      const response = await fetch("http://localhost:5000/analizar", {
+      // Enviar la solicitud al servidor para verificar si el dominio existe
+      const response = await fetch("http://localhost:5000/verificar-dominio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain: dominio }),
       });
-      if (!response.ok) throw new Error("Error en el análisis");
-      setDatos(await response.json());
+
+      const result = await response.json();
+      if (!result.existe) {
+        setError("**El dominio no existe o no es accesible.**");
+        return;
+      }
+
+      // Si el dominio es válido y existe, enviar la solicitud para analizarlo
+      const analisisResponse = await fetch("http://localhost:5000/analizar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain: dominio }),
+      });
+
+      if (!analisisResponse.ok) throw new Error("Error en el análisis");
+      setDatos(await analisisResponse.json());
     } catch (err) {
       setError(err.message);
     } finally {
@@ -68,24 +84,21 @@ function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) 
       setAnalizando(false);
     }
   };
-  
 
   // Renderizado de la interfaz FormularioDominio
   return (
     <>
       {/* Muestra el popup de carga mientras se está analizando */}
-      {analizando && <LoadingPopup progress={progress} />}
-  
+      {analizando && <LoadingPopup progress={progress} texto={textoAnimado} />}
+
       <FormularioDominio 
         setDominio={setDominio}
         dominio={dominio}
         handleSubmit={handleSubmit}
         analizando={analizando}
-        textoAnimado={textoAnimado}
       />
     </>
   );
-  
 }
 
 export default BcFormularioDominio;

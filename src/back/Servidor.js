@@ -4,6 +4,7 @@ import cors from 'cors';
 import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
 
 const HOST = process.env.HOST || "0.0.0.0";
 const app = express();
@@ -12,6 +13,39 @@ const puertoCliente = 5000;
 // Configuración de CORS y middleware para analizar JSON
 app.use(cors());
 app.use(bodyParser.json());
+
+// Función para verificar si un dominio es accesible
+const verificarDominioExistente = async (url) => {
+  try {
+    const response = await axios.head(url); // Enviar solicitud HEAD
+    return response.status === 200; // Verificar que el dominio está accesible
+  } catch (error) {
+    return false; // Si el dominio no responde o hay problemas de conexión
+  }
+};
+
+// Ruta para verificar la existencia del dominio
+app.post('/verificar-dominio', async (req, res) => {
+  const { domain: dominio } = req.body;
+
+  if (!dominio) {
+    return res.status(400).json({ error: 'Se necesita un dominio' });
+  }
+
+  // Verificar si el dominio tiene un formato válido
+  const regex = /^(https?:\/\/)/;
+  if (!regex.test(dominio)) {
+    return res.status(400).json({ error: 'El dominio debe empezar con http:// o https://' });
+  }
+
+  // Verificar si el dominio está accesible
+  const existe = await verificarDominioExistente(dominio);
+  if (!existe) {
+    return res.status(404).json({ error: 'El dominio no existe o no es accesible.' });
+  }
+
+  res.json({ existe: true });
+});
 
 // Ruta para recibir el análisis del dominio
 app.post('/analizar', (req, res) => {
@@ -36,9 +70,9 @@ app.post('/analizar', (req, res) => {
       }
     });
   }
-  
-  //Comando unlighthouse
-  const ejecutar = exec(` npx unlighthouse --site ${dominio} --output-path ../../public/lighthouse --host ${HOST}`);
+
+  // Comando unlighthouse
+  const ejecutar = exec(`npx unlighthouse --site ${dominio} --output-path ../../public/lighthouse --host ${HOST}`);
   let output = '';
   let respuestaEnviada = false;
 
@@ -118,40 +152,7 @@ app.post('/analizar', (req, res) => {
   });
 });
 
- // Endpoint para encontrar el archivo lighthouse.html
-//  app.get('/api/encontrar-unlighthouse', (req, res) => {
-//   try {
-//     const publicFolder = path.resolve(process.cwd(), '../../public/lighthouse');
-//     const encontrarUnlighthouseHtml = (directorio) => {
-//       let resultados = [];
-//       const elementos = fs.readdirSync(directorio);
-//       for (const elemento of elementos) {
-//         const rutaElemento = path.join(directorio, elemento);
-//         const stats = fs.statSync(rutaElemento);
-//         if (stats.isDirectory()) {
-//           resultados = resultados.concat(encontrarUnlighthouseHtml(rutaElemento));
-//         } else if (stats.isFile() && elemento === "lighthouse.html") {
-//           resultados.push(rutaElemento);
-//         }
-//       }
-//       return resultados;
-//     };
-
-//     const resultados = encontrarUnlighthouseHtml(publicFolder);
-//     if (resultados.length > 0) {
-//       const filePath = resultados[0];
-//       // Se remueve la parte de la ruta correspondiente a la carpeta public
-//       const relativePath = filePath.replace(publicFolder, '');
-//       res.json({ url: relativePath });
-//     } else {
-//       res.status(404).json({ error: "Archivo unlighthouse.html no encontrado." });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-//  });
-
- //Escuchando en el puerto del cliente
- app.listen(puertoCliente, () => {
+//Escuchando en el puerto del cliente
+app.listen(puertoCliente, () => {
   console.log(`El servidor está escuchando en http://localhost:${puertoCliente}`);
- });
+});

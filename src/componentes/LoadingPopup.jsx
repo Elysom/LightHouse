@@ -1,6 +1,6 @@
 import React from "react";
 
-function LoadingPopup({ progress }) {
+function LoadingPopup({ progress, texto }) {
   return (
     <div
       style={{
@@ -54,6 +54,19 @@ function LoadingPopup({ progress }) {
             }}
           ></div>
         </div>
+        {/* Mostrar el mensaje debajo de la barra de progreso */}
+        {progress >= 95 && (
+          <div
+            style={{
+              marginTop: "12px",
+              fontWeight: "500",
+              color: "#2563EB",
+              fontSize: "16px",
+            }}
+          >
+            {texto}
+          </div>
+        )}
       </div>
     </div>
   );
