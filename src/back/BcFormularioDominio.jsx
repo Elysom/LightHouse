@@ -85,7 +85,7 @@ function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) 
     }
   };
 
-  // Renderizado de la interfaz FormularioDominio
+  //  interfaz FormularioDominio
   return (
     <>
       {/* Muestra el popup de carga mientras se está analizando */}
