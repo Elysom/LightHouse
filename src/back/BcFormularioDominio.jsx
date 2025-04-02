@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import LoadingPopup from "../componentes/LoadingPopup";
-import FormularioDominio from "../componentes/FormularioDominio";
+import LoadingPopup from "../front/LoadingPopup";
+import FormularioDominio from "../front/FormularioDominio";
 
 function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
   const [dominio, setDominio] = useState("");

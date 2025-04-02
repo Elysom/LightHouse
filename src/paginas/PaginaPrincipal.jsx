@@ -1,8 +1,8 @@
 import { useState } from "react";
 import usarModoOscuro from "../utiles/usarModoOscuro";
-import BotonModoOscuro from "../componentes/BotonModoOscuro";
+import BotonModoOscuro from "../front/BotonModoOscuro";
 import BcFormularioDominio from "../back/BcFormularioDominio";
-import BcHeader from "../back/BcHeader";
+import BcBotones from "../back/BcBotones";
 import "./PaginaPrincipal.css";
 
 function PaginaPrincipal() {
@@ -36,7 +36,7 @@ function PaginaPrincipal() {
       {error && <p className="error-message">{error}</p>}
 
       {/* Mostrar resultados si hay datos */}
-      {datos && datos.reports && <BcHeader datos={datos} />}
+      {datos && datos.reports && <BcBotones datos={datos} />}
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
-import Header from "../componentes/Header";
-import LoadingPopup from "../componentes/LoadingPopup";
+import Botones from "../front/Botones";
+import LoadingPopup from "../front/LoadingPopup";
 
-function BcHeader({ datos }) {
+function BcBotones({ datos }) {
   const [vista, setVista] = useState("dominios");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -68,9 +68,9 @@ function BcHeader({ datos }) {
   return (
     <>
       {loading && <LoadingPopup progress={progress} texto={textoAnimado} />}
-      <Header datos={datos} vista={vista} setVista={setVista} handleRedirect={handleVerUnlighthouse} />
+      <Botones datos={datos} vista={vista} setVista={setVista} handleRedirect={handleVerUnlighthouse} />
     </>
   );
 }
 
-export default BcHeader;
+export default BcBotones;

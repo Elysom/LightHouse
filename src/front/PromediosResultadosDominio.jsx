@@ -1,6 +1,7 @@
 import { calcularPromedio } from "../utiles/calcularPromedio.jsx";
-import TarjetaEstadistica from "../componentes/TarjetaEstadistica.jsx";
-import Grafica from "../componentes/Grafica.jsx";
+import Grafica from "./Grafica.jsx";
+import TarjetaEstadistica from "./TarjetaEstadistica.jsx";
+
 
 function PromediosResultadosDominio({ datos }) {
   // Parámetros de cada métrica

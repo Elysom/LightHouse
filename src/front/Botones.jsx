@@ -1,7 +1,7 @@
 import ResultadosDominio from "./ResultadosDominio";
 import PromediosResultadosDominio from "./PromediosResultadosDominio";
 
-function Header({ datos, vista, setVista, handleRedirect }) {
+function Botones({ datos, vista, setVista, handleRedirect }) {
   // Estilo base de los botones
   const baseButtonClass =
     "px-4 py-2 rounded font-semibold shadow transition-colors duration-200";
@@ -53,4 +53,4 @@ function Header({ datos, vista, setVista, handleRedirect }) {
   );
 }
 
-export default Header;
+export default Botones;
