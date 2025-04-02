@@ -10,4 +10,3 @@ function MostrarDatos({ mostrarValores, setMostrarValores }) {
   }
   
   export default MostrarDatos;
-  

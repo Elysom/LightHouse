@@ -1,7 +1,6 @@
-import { calcularPromedio } from "../utiles/calcularPromedio.jsx";
+import {calcularPromedio} from "../utiles/calcularPromedio.jsx";
 import Grafica from "./Grafica.jsx";
 import TarjetaEstadistica from "./TarjetaEstadistica.jsx";
-
 
 function PromediosResultadosDominio({ datos }) {
   // Parámetros de cada métrica
@@ -11,6 +10,7 @@ function PromediosResultadosDominio({ datos }) {
     "Buenas Prácticas": "Uso de HTTPS: comprueba si su sitio web utiliza HTTPS para proteger los datos de los usuarios.\nOptimización de imágenes: comprueba si las imágenes de su sitio web están optimizadas para reducir el tiempo de carga.\nUso de fuentes web: comprueba si su sitio web utiliza fuentes web para mejorar la legibilidad y la velocidad de carga.",
     "SEO": "Metaetiquetas: comprueba si las metaetiquetas importantes están presentes en su sitio web, como la etiqueta de título, la etiqueta de descripción y la etiqueta viewport.\nEstructura del contenido: comprueba si el contenido de su sitio web está técnicamente optimizado para los motores de búsqueda.\nEnlaces: comprueba si los enlaces de su sitio web son funcionales y están optimizados para los motores de búsqueda."
   };
+
   // Promedios de cada métrica
   const promedios = [
     { name: "Rendimiento", score: calcularPromedio("Rendimiento", datos.reports) },
@@ -18,17 +18,22 @@ function PromediosResultadosDominio({ datos }) {
     { name: "Buenas Prácticas", score: calcularPromedio("Buenas Prácticas", datos.reports) },
     { name: "SEO", score: calcularPromedio("SEO", datos.reports) }
   ];
+
   // Interfaz PromediosResultadosDominio
   return (
-    <div className="space-y-6 pb-10">
-      <h2 className="text-2xl font-bold">Resumen de los subdominios</h2>
+    <div className="pb-10">
+      <h2 className="text-2xl font-bold mb-6">Resumen de los subdominios</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {promedios.map((m, i) => (
-          <TarjetaEstadistica key={i} nombre={m.name} score={m.score} descripcion={parametros[m.name]} />
-        ))}
-      </div>
-      <div className="mt-16">
-        <h3 className="text-xl font-semibold mb-2">Gráfico de los promedios</h3>
+          <TarjetaEstadistica
+            key={i}
+            nombre={m.name}
+            score={m.score}
+            descripcion={parametros[m.name]}
+          />))}</div>
+      <div style={{ paddingTop: "1rem" }}></div>
+      <div className="report-card">
+        <h3 className="report-subtitle">Gráfico de los promedios</h3>
         <Grafica datos={promedios} />
       </div>
     </div>
