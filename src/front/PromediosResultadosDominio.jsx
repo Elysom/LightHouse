@@ -32,7 +32,7 @@ function PromediosResultadosDominio({ datos }) {
             descripcion={parametros[m.name]}
           />))}</div>
       <div style={{ paddingTop: "1rem" }}></div>
-      <div className="report-card">
+      <div className="report-grid">
         <h3 className="report-subtitle">Gráfico de los promedios</h3>
         <Grafica datos={promedios} />
       </div>
