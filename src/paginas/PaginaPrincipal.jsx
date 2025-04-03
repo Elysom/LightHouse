@@ -3,6 +3,7 @@ import usarModoOscuro from "../utiles/usarModoOscuro";
 import BotonModoOscuro from "../front/BotonModoOscuro";
 import BcFormularioDominio from "../back/BcFormularioDominio";
 import BcBotones from "../back/BcBotones";
+import Navbar from "../front/Navbar";
 import "./PaginaPrincipal.css";
 
 function PaginaPrincipal() {
@@ -16,28 +17,33 @@ function PaginaPrincipal() {
   const [analizando, setAnalizando] = useState(false);
 
   return (
-    <div className={`app-container wide-container ${modoOscuro ? "modo-oscuro" : ""}`}>
-      {/* Toggle modo oscuro */}
-      <BotonModoOscuro modoOscuro={modoOscuro} setModoOscuro={setModoOscuro} />
+    <>
+      {/* Navbar totalmente arriba */}
+      <Navbar />
 
-      {/* Logo + título */}
-      <img src="/logo.jpeg" alt="SagaTech Logo" className="logo" />
-      <h1 className="title">Analizador Sagatech</h1>
+      {/* Contenedor principal */}
+      <div className={`app-container wide-container ${modoOscuro ? "modo-oscuro" : ""}`}>
+        {/* Botón modo oscuro */}
+        <BotonModoOscuro modoOscuro={modoOscuro} setModoOscuro={setModoOscuro} />
 
-      {/* Formulario para ingresar el dominio */}
-      <BcFormularioDominio
-        setDatos={setDatos}
-        setError={setError}
-        setAnalizando={setAnalizando}
-        analizando={analizando}
-      />
+        {/* Título */}
+        <h1 className="title">Analizador Sagatech</h1>
 
-      {/* Mensaje de error si lo hay */}
-      {error && <p className="error-message">{error}</p>}
+        {/* Formulario para ingresar el dominio */}
+        <BcFormularioDominio
+          setDatos={setDatos}
+          setError={setError}
+          setAnalizando={setAnalizando}
+          analizando={analizando}
+        />
 
-      {/* Mostrar resultados si hay datos */}
-      {datos && datos.reports && <BcBotones datos={datos} />}
-    </div>
+        {/* Mensaje de error si lo hay */}
+        {error && <p className="error-message">{error}</p>}
+
+        {/* Mostrar los resultados si hay datos */}
+        {datos && datos.reports && <BcBotones datos={datos} />}
+      </div>
+    </>
   );
 }
 

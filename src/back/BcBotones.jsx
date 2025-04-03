@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
-import Botones from "../front/Botones";
 import LoadingPopup from "../front/LoadingPopup";
+import Navbar from "../front/Navbar";  // Importamos Navbar
+import ResultadosDominio from "../front/ResultadosDominio";
+import PromediosResultadosDominio from "../front/PromediosResultadosDominio";
 
 function BcBotones({ datos }) {
   const [vista, setVista] = useState("dominios");
@@ -68,7 +70,29 @@ function BcBotones({ datos }) {
   return (
     <>
       {loading && <LoadingPopup progress={progress} texto={textoAnimado} />}
-      <Botones datos={datos} vista={vista} setVista={setVista} handleRedirect={handleVerUnlighthouse} />
+      
+      {/* Navbar con los botones */}
+      <Navbar 
+        isAnalizado={true}  // Asegúrate de pasar el valor de isAnalizado correctamente
+        vista={vista} 
+        setVista={setVista} 
+        handleRedirect={handleVerUnlighthouse} 
+        datos={datos}  // Pasamos los datos a Navbar
+      />
+      
+      {/* Mostrar los resultados según la vista seleccionada en el cuerpo */}
+      <div className="body-content">
+        {datos && datos.reports && (
+          <div>
+            
+            {vista === "dominios" ? (
+              <ResultadosDominio datos={datos} />
+            ) : (
+              <PromediosResultadosDominio datos={datos} />
+            )}
+          </div>
+        )}
+      </div>
     </>
   );
 }
