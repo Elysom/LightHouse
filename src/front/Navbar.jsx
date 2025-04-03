@@ -41,7 +41,7 @@ const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
         left: 0,
         right: 0,
         height: '80px',          // Altura del navbar
-        backgroundColor: '#1F2937',
+        backgroundColor: '#051733',
         zIndex: 50,
       }}
     >
@@ -65,7 +65,7 @@ const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
           }}
         >
           <img
-            src="/logo.jpeg"
+            src="/LOGO.webp"
             alt="Logo Sagatech"
             style={{
               borderRadius: '5px',
@@ -80,7 +80,6 @@ const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
               fontSize: '2rem',
             }}
           >
-            Sagatech
           </span>
         </div>
 
