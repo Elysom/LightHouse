@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
-import LoadingPopup from "../front/LoadingPopup";
+import PopupCargando from "../front/PopupCargando";
 import Navbar from "../front/Navbar";
 import ResultadosDominio from "../front/ResultadosDominio";
 import PromediosResultadosDominio from "../front/PromediosResultadosDominio";
 
-function BcBotones({datos}) {
+function BcBotones({ datos }) {
   const [vista, setVista] = useState("dominios");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -69,7 +69,7 @@ function BcBotones({datos}) {
 
   return (
     <>
-      {loading && <LoadingPopup progress={progress} texto={textoAnimado} />}
+      {loading && <PopupCargando progress={progress} texto={textoAnimado} />}
       
       {/* Navbar con los botones */}
       <Navbar 

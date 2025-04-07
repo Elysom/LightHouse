@@ -1,4 +1,7 @@
-import {calcularPromedio} from "../utiles/calcularPromedio.jsx";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { FaChevronRight } from "react-icons/fa";
+import { calcularPromedio } from "../utiles/calcularPromedio.jsx";
 import Grafica from "./Grafica.jsx";
 import TarjetaEstadistica from "./TarjetaEstadistica.jsx";
 
@@ -19,7 +22,10 @@ function PromediosResultadosDominio({datos}) {
     { name: "SEO", score: calcularPromedio("SEO", datos.reports) }
   ];
 
-  // Interfaz PromediosResultadosDominio
+  // Estado para controlar la expansión de la sección de Auditoría
+  const [auditoriaAbierta, setAuditoriaAbierta] = useState(false);
+  const toggleAuditoria = () => setAuditoriaAbierta(prev => !prev);
+
   return (
     <div className="pb-10">
       <h2 className="text-2xl font-bold mb-6">Resumen de los subdominios</h2>
@@ -30,9 +36,60 @@ function PromediosResultadosDominio({datos}) {
             nombre={m.name}
             score={m.score}
             descripcion={parametros[m.name]}
-          />))}</div>
+          />
+        ))}
+      </div>
+
+      {datos.auditsScoreCero && datos.auditsScoreCero.length > 0 && (
+        <div className="p-4 rounded-2xl shadow bg-white space-y-2 my-6">
+          <div
+            onClick={toggleAuditoria}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <motion.span
+              className="inline-block select-none text-lg"
+              animate={{ rotate: auditoriaAbierta ? 90 : 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              style={{
+                transformOrigin: "center",
+                display: "inline-block",
+                marginRight: "2px"
+              }}
+            >
+              <FaChevronRight />
+            </motion.span>
+            <span className="text-lg font-bold">Auditoría</span>
+          </div>
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: auditoriaAbierta ? "auto" : 0, opacity: auditoriaAbierta ? 1 : 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="overflow-hidden"
+            style={{ pointerEvents: auditoriaAbierta ? "auto" : "none" }}
+          >
+            <div className="flex flex-col gap-2 mt-4">
+              {datos.auditsScoreCero.map((audit, idx) => (
+                <div key={idx} className="flex items-center">
+                  <span
+                    style={{
+                      width: "12px",
+                      height: "12px",
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                      display: "inline-block",
+                      marginRight: "0.5rem"
+                    }}
+                  ></span>
+                  <span className="text-lg">{audit.title}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       <div style={{ paddingTop: "1rem" }}></div>
-      <div className="report-grid">
+      <div className="report-card-promedios">
         <h3 className="report-subtitle">Gráfico de los promedios</h3>
         <Grafica datos={promedios} />
       </div>

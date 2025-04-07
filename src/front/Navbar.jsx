@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-const Navbar = ({isAnalizado, vista, setVista, handleRedirect}) => {
+const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
   const containerRef = useRef(null);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-function LoadingPopup({progress, texto}) {
+function PopupCargando({ progress, texto }) {
   return (
     <div
       style={{
@@ -72,4 +72,4 @@ function LoadingPopup({progress, texto}) {
   );
 }
 
-export default LoadingPopup;
+export default PopupCargando;

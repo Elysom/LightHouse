@@ -1,5 +1,5 @@
-import {BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList} from "recharts";
-import {getColor} from "../utiles/obtenerColor.jsx";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
+import { getColor } from "../utiles/obtenerColor.jsx";
 
 function Grafica({ datos, height = 400, mostrarValores }) {
   return (

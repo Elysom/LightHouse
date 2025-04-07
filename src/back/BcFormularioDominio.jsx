@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import LoadingPopup from "../front/LoadingPopup";
+import { useState, useRef } from "react";
+import PopupCargando from "../front/PopupCargando";
 import FormularioDominio from "../front/FormularioDominio";
 
-function BcFormularioDominio({setDatos, setError, setAnalizando, analizando}) {
+function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
   const [dominio, setDominio] = useState("");
   const [textoAnimado, setTextoAnimado] = useState("Analizando");
   const [progress, setProgress] = useState(0);
@@ -89,7 +89,7 @@ function BcFormularioDominio({setDatos, setError, setAnalizando, analizando}) {
   return (
     <>
       {/* Muestra el popup de carga mientras se está analizando */}
-      {analizando && <LoadingPopup progress={progress} texto={textoAnimado} />}
+      {analizando && <PopupCargando progress={progress} texto={textoAnimado} />}
 
       <FormularioDominio 
         setDominio={setDominio}

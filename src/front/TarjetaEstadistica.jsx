@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {motion} from "framer-motion";
-import {FaChevronRight} from "react-icons/fa";
-import {getColor} from "../utiles/obtenerColor.jsx";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { FaChevronRight } from "react-icons/fa";
+import { getColor } from "../utiles/obtenerColor.jsx";
 
 function TarjetaEstadistica({ nombre, score, descripcion }) {
   const [abierto, setAbierto] = useState(false);
