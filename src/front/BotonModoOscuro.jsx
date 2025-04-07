@@ -1,4 +1,4 @@
-function BotonModoOscuro({ modoOscuro, setModoOscuro }) {
+function BotonModoOscuro({modoOscuro, setModoOscuro}) {
   return (
     <label className="switch">
       <input

@@ -2,7 +2,7 @@ import { useState } from "react";
 import Grafica from "./Grafica";
 import MostrarDatos from "./MostrarDatos";
 
-function ResultadosDominio({ datos }) {
+function ResultadosDominio({datos}) {
   const [mostrarValores, setMostrarValores] = useState(false);
 
   return (

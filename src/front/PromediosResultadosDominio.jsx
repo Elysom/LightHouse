@@ -2,7 +2,7 @@ import {calcularPromedio} from "../utiles/calcularPromedio.jsx";
 import Grafica from "./Grafica.jsx";
 import TarjetaEstadistica from "./TarjetaEstadistica.jsx";
 
-function PromediosResultadosDominio({ datos }) {
+function PromediosResultadosDominio({datos}) {
   // Parámetros de cada métrica
   const parametros = {
     "Rendimiento": "First Contentful Paint (FCP): el tiempo que tarda en aparecer el primer contenido en pantalla.\nSpeed Index (SI): el tiempo que tarda el contenido visible en aparecer en pantalla.\nTime to Interactive (TTI): el tiempo necesario para que el sitio web sea interactivo y responda a las acciones del usuario.",

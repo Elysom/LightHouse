@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import LoadingPopup from "../front/LoadingPopup";
 import FormularioDominio from "../front/FormularioDominio";
 
-function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) {
+function BcFormularioDominio({setDatos, setError, setAnalizando, analizando}) {
   const [dominio, setDominio] = useState("");
   const [textoAnimado, setTextoAnimado] = useState("Analizando");
   const [progress, setProgress] = useState(0);

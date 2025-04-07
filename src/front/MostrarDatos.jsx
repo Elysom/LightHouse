@@ -1,4 +1,4 @@
-function MostrarDatos({ mostrarValores, setMostrarValores }) {
+function MostrarDatos({mostrarValores, setMostrarValores}) {
     return (
       <button 
         className="boton-mostrar-datos" 

@@ -1,6 +1,6 @@
 import React from "react";
 
-function LoadingPopup({ progress, texto }) {
+function LoadingPopup({progress, texto}) {
   return (
     <div
       style={{

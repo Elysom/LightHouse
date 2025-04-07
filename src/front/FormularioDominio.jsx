@@ -1,4 +1,4 @@
-function FormularioDominio({ dominio, setDominio, handleSubmit, analizando }) {
+function FormularioDominio({dominio, setDominio, handleSubmit, analizando}) {
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <input

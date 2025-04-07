@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
-const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
+const Navbar = ({isAnalizado, vista, setVista, handleRedirect}) => {
   const containerRef = useRef(null);
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
 
@@ -40,7 +40,7 @@ const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
         top: 0,
         left: 0,
         right: 0,
-        height: '80px',          // Altura del navbar
+        height: '80px', // Altura del navbar
         backgroundColor: '#051733',
         zIndex: 50,
       }}
@@ -91,7 +91,7 @@ const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
               position: 'absolute',
               left: '82%',
               top: '50%',
-              transform: 'translate(-50%, -50%)',  // Centro horizontal y vertical
+              transform: 'translate(-50%, -50%)', // Centro horizontal y vertical
               display: 'flex',
               gap: '2rem',
               // position: 'relative' para que el indicador se ancle a este contenedor

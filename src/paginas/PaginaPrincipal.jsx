@@ -1,5 +1,5 @@
 import { useState } from "react";
-import usarModoOscuro from "../utiles/usarModoOscuro";
+import BcModoOscuro from "../back/BcModoOscuro";
 import BotonModoOscuro from "../front/BotonModoOscuro";
 import BcFormularioDominio from "../back/BcFormularioDominio";
 import BcBotones from "../back/BcBotones";
@@ -10,7 +10,7 @@ function PaginaPrincipal() {
   const [modoOscuro, setModoOscuro] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
-  usarModoOscuro(modoOscuro);
+  BcModoOscuro(modoOscuro);
 
   const [datos, setDatos] = useState(null);
   const [error, setError] = useState(null);
