@@ -133,19 +133,24 @@ app.post('/analizar', (req, res) => {
           }
 
           // Extraer los elementos dentro de "audits" que tengan score igual a 0
+          // Extraer los elementos dentro de "audits" que tengan score igual a 0
           if (dataJson.audits) {
             for (const key in dataJson.audits) {
               const audit = dataJson.audits[key];
               if (typeof audit.score === 'number' && audit.score === 0) {
-                auditsScoreCero.push({
-                  file: file,
-                  id: key,
-                  title: audit.title,
-                  score: audit.score
-                });
+                // Verificar si ya existe un audit con el mismo title
+                if (!auditsScoreCero.some(item => item.title === audit.title)) {
+                  auditsScoreCero.push({
+                    file: file,
+                    id: key,
+                    title: audit.title,
+                    score: audit.score
+                  });
+                }
               }
             }
           }
+
         } catch (error) {
           console.error("Error al procesar el archivo:", file, error);
         }
