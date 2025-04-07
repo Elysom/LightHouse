@@ -21,7 +21,7 @@ function BcFormularioDominio({ setDatos, setError, setAnalizando, analizando }) 
     intervalRef.current = setInterval(() => {
       setProgress((prev) => {
         if (prev < 95) {
-          return prev + 5;
+          return prev + 2;
         } else {
           setTextoAnimado("Esperando respuesta de Unlighthouse"); // Cambia solo cuando llegue al 95%
           return prev;

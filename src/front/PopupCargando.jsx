@@ -1,6 +1,16 @@
 import React from "react";
 
-function PopupCargando({ progress, texto }) {
+function PopupCargando({ progress }) {
+  // Determinar el mensaje según el rango del progreso
+  let mensaje = "";
+  if (progress >= 0 && progress <= 50) {
+    mensaje = "Este proceso puede tardar unos minutos";
+  } else if (progress >= 51 && progress <= 84) {
+    mensaje = "Queda poco";
+  } else if (progress >= 85 && progress <= 100) {
+    mensaje = "Un momento";
+  }
+
   return (
     <div
       style={{
@@ -54,8 +64,8 @@ function PopupCargando({ progress, texto }) {
             }}
           ></div>
         </div>
-        {/* Mostrar el mensaje debajo de la barra de progreso */}
-        {progress >= 95 && (
+        {/* Mostrar el mensaje debajo de la barra de progreso si se definió */}
+        {mensaje && (
           <div
             style={{
               marginTop: "12px",
@@ -64,7 +74,7 @@ function PopupCargando({ progress, texto }) {
               fontSize: "16px",
             }}
           >
-            {texto}
+            {mensaje}
           </div>
         )}
       </div>

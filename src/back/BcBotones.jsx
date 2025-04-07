@@ -19,7 +19,7 @@ function BcBotones({ datos }) {
     intervalRef.current = setInterval(() => {
       setProgress((prev) => {
         if (prev < 95) {
-          return prev + 5;
+          return prev + 2;
         } else {
           setTextoAnimado("Esperando respuesta de Unlighthouse"); // Mensaje cuando el progreso es alto
           return prev;
