@@ -13,6 +13,7 @@ const puertoCliente = 5000;
 // Configuración de CORS y middleware para analizar JSON
 app.use(cors());
 app.use(bodyParser.json());
+console.log("holamundo");
 
 // Función para verificar si un dominio es accesible
 const verificarDominioExistente = async (url) => {
@@ -87,56 +88,79 @@ app.post('/analizar', (req, res) => {
       // Función recursiva para buscar archivos JSON en subdirectorios
       const encontrarJsons = (dir) => {
         let resultados = [];
-        const jsons = fs.readdirSync(dir);
-        for (const json of jsons) {
-          const rutaJson = path.join(dir, json);
-          const ruta = fs.statSync(rutaJson);
-          if (ruta.isDirectory()) {
-            resultados = resultados.concat(encontrarJsons(rutaJson));
-          } else if (ruta.isFile() && json.endsWith('.json')) {
-            resultados.push(rutaJson);
+        const elementos = fs.readdirSync(dir);
+        for (const elemento of elementos) {
+          const rutaElemento = path.join(dir, elemento);
+          const stats = fs.statSync(rutaElemento);
+          if (stats.isDirectory()) {
+            resultados = resultados.concat(encontrarJsons(rutaElemento));
+          } else if (stats.isFile() && elemento.endsWith('.json')) {
+            resultados.push(rutaElemento);
           }
         }
         return resultados;
       };
 
-      const archivoJson = encontrarJsons(reportsDir);
-      if (archivoJson.length === 0) {
+      const archivosJson = encontrarJsons(reportsDir);
+      if (archivosJson.length === 0) {
         return res.status(404).json({ error: "No se encontró ningún archivo JSON en .unlighthouse" });
       }
 
-      // Procesar los archivos JSON encontrados y enviarlos como respuesta
+      // Procesar los archivos JSON encontrados
       const resultadosObtenidos = [];
-      archivoJson.forEach(file => {
-        try {
-          const datos = fs.readFileSync(file, 'utf8');
-          const puntuacion = JSON.parse(datos);
+      const auditsScoreCero = []; // Aquí se almacenarán los audits con score 0
 
-          if (puntuacion.categories) {
+      archivosJson.forEach(file => {
+        try {
+          const datosArchivo = fs.readFileSync(file, 'utf8');
+          const dataJson = JSON.parse(datosArchivo);
+
+
+          // Procesar métricas basadas en categorías
+          if (dataJson.categories) {
             const metricas = [
-              { name: 'Rendimiento', score: puntuacion.categories.performance?.score ?? "N/A" },
-              { name: 'Accesibilidad', score: puntuacion.categories.accessibility?.score ?? "N/A" },
-              { name: 'Buenas Prácticas', score: puntuacion.categories['best-practices']?.score ?? "N/A" },
-              { name: 'SEO', score: puntuacion.categories.seo?.score ?? "N/A" },
+              { name: 'Rendimiento', score: dataJson.categories.performance?.score ?? "N/A" },
+              { name: 'Accesibilidad', score: dataJson.categories.accessibility?.score ?? "N/A" },
+              { name: 'Buenas Prácticas', score: dataJson.categories['best-practices']?.score ?? "N/A" },
+              { name: 'SEO', score: dataJson.categories.seo?.score ?? "N/A" },
             ];
 
             const carpetaPadre = path.basename(path.dirname(file));
-        
             resultadosObtenidos.push({
               folder: carpetaPadre || "Desconocido",
               metrics: metricas,
             });
+          }
+
+          // Extraer los elementos dentro de "audits" que tengan score igual a 0
+          if (dataJson.audits) {
+            for (const key in dataJson.audits) {
+              const audit = dataJson.audits[key];
+              if (typeof audit.score === 'number' && audit.score === 0) {
+                auditsScoreCero.push({
+                  file: file,
+                  id: key,
+                  title: audit.title,
+                  score: audit.score
+                });
+              }
+            }
           }
         } catch (error) {
           console.error("Error al procesar el archivo:", file, error);
         }
       });
 
+      
+
+      // Mostrar en consola el contenido de auditsScoreCero
+      // console.log('Audits con score 0:', auditsScoreCero);
+
       if (resultadosObtenidos.length === 0) {
         return res.status(404).json({ error: "No se encontraron métricas válidas en los archivos JSON" });
       }
-      //Respuesta para el cliente
-      res.json({ domain: dominio, reports: resultadosObtenidos });
+      // Enviar respuesta para el cliente, incluyendo también los audits con score 0
+      res.json({ domain: dominio, reports: resultadosObtenidos, auditsScoreCero });
     }
   });
 
@@ -152,7 +176,7 @@ app.post('/analizar', (req, res) => {
   });
 });
 
-//Escuchando en el puerto del cliente
+// Escuchando en el puerto del cliente
 app.listen(puertoCliente, () => {
   console.log(`El servidor está escuchando en http://localhost:${puertoCliente}`);
 });
