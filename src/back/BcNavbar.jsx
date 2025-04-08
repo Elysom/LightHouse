@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import PopupCargando from "../front/PopupCargando";
 import Navbar from "../front/Navbar";
-import ResultadosDominio from "../front/ResultadosDominio";
-import PromediosResultadosDominio from "../front/PromediosResultadosDominio";
+import VistaResultadosIndividuales from "../front/VistaResultadosIndividuales";
+import VistaResultadosPromedios from "../front/VistaResultadosPromedio";
 
-function BcBotones({ datos }) {
+function BcNavbar({ datos }) {
   const [vista, setVista] = useState("dominios");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -86,9 +86,9 @@ function BcBotones({ datos }) {
           <div>
             
             {vista === "dominios" ? (
-              <ResultadosDominio datos={datos} />
+              <VistaResultadosIndividuales datos={datos} />
             ) : (
-              <PromediosResultadosDominio datos={datos} />
+              <VistaResultadosPromedios datos={datos} />
             )}
           </div>
         )}
@@ -97,4 +97,4 @@ function BcBotones({ datos }) {
   );
 }
 
-export default BcBotones;
+export default BcNavbar;

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Grafica from "./Grafica";
-import MostrarDatos from "./MostrarDatos";
+import BotonMostrarDatos from "./BotonMostrarDatos";
 
-function ResultadosDominio({datos}) {
-  const [mostrarValores, setMostrarValores] = useState(false);
+function VistaResultadosIndividuales({datos}) {
+  const [ mostrarValores, setMostrarValores ] = useState(false);
 
   return (
     <div className="results-container">
@@ -17,7 +17,7 @@ function ResultadosDominio({datos}) {
 
           return (
             <div key={index} className="report-card">
-              <MostrarDatos mostrarValores={mostrarValores} setMostrarValores={setMostrarValores} />
+              <BotonMostrarDatos mostrarValores={mostrarValores} setMostrarValores={setMostrarValores} />
               <h3 className="report-subtitle">Subdominio: {report.folder}</h3>
               <Grafica datos={formattedMetrics} height={500} mostrarValores={mostrarValores} />
             </div>
@@ -28,4 +28,4 @@ function ResultadosDominio({datos}) {
   );
 }
 
-export default ResultadosDominio;
+export default VistaResultadosIndividuales;

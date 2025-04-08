@@ -2,7 +2,7 @@ import { useState } from "react";
 import BcModoOscuro from "../back/BcModoOscuro";
 import BotonModoOscuro from "../front/BotonModoOscuro";
 import BcFormularioDominio from "../back/BcFormularioDominio";
-import BcBotones from "../back/BcBotones";
+import BcNavbar from "../back/BcNavbar";
 import Navbar from "../front/Navbar";
 import "./PaginaPrincipal.css";
 
@@ -21,10 +21,11 @@ function PaginaPrincipal() {
       {/* Navbar totalmente arriba */}
       <Navbar/>
 
+      {/* Botón modo oscuro */}
+      <BotonModoOscuro modoOscuro={modoOscuro} setModoOscuro={setModoOscuro} />
+
       {/* Contenedor principal */}
       <div className={`app-container wide-container ${modoOscuro ? "modo-oscuro" : ""}`}>
-        {/* Botón modo oscuro */}
-        <BotonModoOscuro modoOscuro={modoOscuro} setModoOscuro={setModoOscuro} />
 
         {/* Título */}
         <h1 className="title">Analizador Sagatech</h1>
@@ -41,7 +42,7 @@ function PaginaPrincipal() {
         {error && <p className="error-message">{error}</p>}
 
         {/* Mostrar los resultados si hay datos */}
-        {datos && datos.reports && <BcBotones datos={datos} />}
+        {datos && datos.reports && <BcNavbar datos={datos} />}
       </div>
     </>
   );

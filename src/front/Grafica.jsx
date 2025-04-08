@@ -8,7 +8,7 @@ function Grafica({ datos, height = 400, mostrarValores }) {
         <XAxis dataKey="name" stroke="#555" tick={{ fontSize: 12 }} tickMargin={10} interval={0} />
         <YAxis stroke="#555" />
         <Tooltip />
-        <Bar dataKey="score" radius={[8, 8, 0, 0]}>
+        <Bar dataKey="score" radius={[8, 8, 0, 0]} barSize={80}>
           {datos.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={getColor(entry.score)} />
           ))}

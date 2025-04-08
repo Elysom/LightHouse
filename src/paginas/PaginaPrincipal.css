@@ -35,6 +35,7 @@ body {
   align-items: baseline;
   justify-content: center;
 }
+
 body.dark-mode {
   background-color: var(--primary-bg);
   color: var(--text-color);
@@ -217,6 +218,12 @@ body.dark-mode .input-field::placeholder {
   margin-bottom: 10px;
 }
 
+body.dark-mode .report-card{
+  background: #ffffff !important;
+  color: #333 !important;
+  border: 1px solid #ddd !important;
+}
+
 .report-card:hover {
   box-shadow: 0px 0px 25px rgba(0, 170, 255, 0.6);
 }
@@ -289,9 +296,3 @@ body.dark-mode .report-card-promedios {
 .recharts-wrapper {
   transform: translateY(50px); 
 }
-
-/* .logo {
-  border-radius: 5px;
-  box-shadow: rgba(0, 170, 255, 0.7) 0px 5px 15px;
-  margin: 10px;
-} */

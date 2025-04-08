@@ -4,7 +4,8 @@ import { calcularPromedio } from "../utiles/calcularPromedio.jsx";
 import Grafica from "./Grafica.jsx";
 import TarjetaEstadistica from "./TarjetaEstadistica.jsx";
 
-function PromediosResultadosDominio({ datos }) {
+function VistaResultadosPromedio({datos}) {
+  
   const parametros = {
     "Rendimiento": "First Contentful Paint (FCP): el tiempo que tarda en aparecer el primer contenido en pantalla.\nSpeed Index (SI): el tiempo que tarda el contenido visible en aparecer en pantalla.\nTime to Interactive (TTI): el tiempo necesario para que el sitio web sea interactivo y responda a las acciones del usuario.",
     "Accesibilidad": "Contraste: comprueba si los colores de su sitio web tienen suficiente contraste para ser legibles por todos los usuarios.\nNavegación: comprueba si su sitio web es fácil de navegar utilizando un teclado y un lector de pantalla.\nContenido: comprueba si el contenido de su sitio web es accesible para todos los usuarios, incluidos aquellos con necesidades específicas de accesibilidad.",
@@ -64,7 +65,7 @@ function PromediosResultadosDominio({ datos }) {
         })}
       </div>
 
-      <div className="pt-6">
+      <div className="report-card-promedios">
         <h3 className="report-subtitle">Gráfico de los promedios</h3>
         <Grafica datos={promedios} />
       </div>
@@ -72,4 +73,4 @@ function PromediosResultadosDominio({ datos }) {
   );
 }
 
-export default PromediosResultadosDominio;
+export default VistaResultadosPromedio;

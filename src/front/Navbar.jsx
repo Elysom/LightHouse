@@ -11,7 +11,7 @@ const Navbar = ({ isAnalizado, vista, setVista, handleRedirect }) => {
       onClick: () => setVista('dominios'),
     },
     {
-      label: 'Resultados (Promedios)',
+      label: 'Resultados (Promedio)',
       key: 'promedios',
       onClick: () => setVista('promedios'),
     },
