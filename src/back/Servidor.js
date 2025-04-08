@@ -77,6 +77,14 @@ app.post('/analizar', (req, res) => {
   let output = '';
   let respuestaEnviada = false;
 
+  // Definición del mapeo para traducción de categorías
+  const mapeoCategorias = {
+    performance: 'Rendimiento',
+    accessibility: 'Accesibilidad',
+    'best-practices': 'Buenas Prácticas',
+    seo: 'SEO'
+  };
+
   // Escuchar la salida
   ejecutar.stdout.on('data', (datos) => {
     output += datos;
@@ -115,16 +123,19 @@ app.post('/analizar', (req, res) => {
           const datosArchivo = fs.readFileSync(file, 'utf8');
           const dataJson = JSON.parse(datosArchivo);
 
+          // Se obtiene la sección de categorías; se intenta con "categories" o "reportCategories"
+          const seccionCategorias = dataJson.categories || dataJson.reportCategories;
 
-          // Procesar métricas basadas en categorías
-          if (dataJson.categories) {
-            const metricas = [
-              { name: 'Rendimiento', score: dataJson.categories.performance?.score ?? "N/A" },
-              { name: 'Accesibilidad', score: dataJson.categories.accessibility?.score ?? "N/A" },
-              { name: 'Buenas Prácticas', score: dataJson.categories['best-practices']?.score ?? "N/A" },
-              { name: 'SEO', score: dataJson.categories.seo?.score ?? "N/A" },
-            ];
-
+          // Procesar métricas basadas en categorías de forma dinámica
+          if (seccionCategorias) {
+            const clavesCategorias = Object.keys(seccionCategorias);
+            const metricas = clavesCategorias.map(cat => {
+              const score = seccionCategorias[cat].score ?? "N/A";
+              return {
+                name: mapeoCategorias[cat] || cat,
+                score: score
+              };
+            });
             const carpetaPadre = path.basename(path.dirname(file));
             resultadosObtenidos.push({
               folder: carpetaPadre || "Desconocido",
@@ -133,18 +144,34 @@ app.post('/analizar', (req, res) => {
           }
 
           // Extraer los elementos dentro de "audits" que tengan score igual a 0
-          // Extraer los elementos dentro de "audits" que tengan score igual a 0
           if (dataJson.audits) {
             for (const key in dataJson.audits) {
               const audit = dataJson.audits[key];
               if (typeof audit.score === 'number' && audit.score === 0) {
-                // Verificar si ya existe un audit con el mismo title
+                // Buscar la categoría a la que pertenece la auditoría mediante auditRefs dentro de la sección de categorías
+                let categoriaEncontrada = null;
+                if (seccionCategorias) {
+                  for (const cat in seccionCategorias) {
+                    if (
+                      seccionCategorias[cat].auditRefs &&
+                      Array.isArray(seccionCategorias[cat].auditRefs) &&
+                      seccionCategorias[cat].auditRefs.some(ref => ref.id === key)
+                    ) {
+                      categoriaEncontrada = cat;
+                      break;
+                    }
+                  }
+                }
+                // Verificar si ya existe un audit con el mismo title y agregar la categoría correspondiente
                 if (!auditsScoreCero.some(item => item.title === audit.title)) {
                   auditsScoreCero.push({
                     file: file,
                     id: key,
                     title: audit.title,
-                    score: audit.score
+                    score: audit.score,
+                    category: categoriaEncontrada
+                      ? (mapeoCategorias[categoriaEncontrada] || categoriaEncontrada)
+                      : "Desconocido"
                   });
                 }
               }
@@ -156,15 +183,13 @@ app.post('/analizar', (req, res) => {
         }
       });
 
-      
-
       // Mostrar en consola el contenido de auditsScoreCero
-      // console.log('Audits con score 0:', auditsScoreCero);
+      console.log('Audits con score 0:', auditsScoreCero);
 
       if (resultadosObtenidos.length === 0) {
         return res.status(404).json({ error: "No se encontraron métricas válidas en los archivos JSON" });
       }
-      // Enviar respuesta para el cliente, incluyendo también los audits con score 0
+      // Enviar respuesta para el cliente, incluyendo también los audits con score 0 y su categoría
       res.json({ domain: dominio, reports: resultadosObtenidos, auditsScoreCero });
     }
   });
