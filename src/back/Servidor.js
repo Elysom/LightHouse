@@ -167,7 +167,7 @@ app.post('/analizar', (req, res) => {
                   auditsScoreCero.push({
                     file: file,
                     id: key,
-                    title: audit.title,
+                    title: '*'+ audit.title+'*',
                     score: audit.score,
                     category: categoriaEncontrada
                       ? (mapeoCategorias[categoriaEncontrada] || categoriaEncontrada)

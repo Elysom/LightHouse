@@ -19,7 +19,7 @@ function PaginaPrincipal() {
   return (
     <>
       {/* Navbar totalmente arriba */}
-      <Navbar />
+      <Navbar/>
 
       {/* Contenedor principal */}
       <div className={`app-container wide-container ${modoOscuro ? "modo-oscuro" : ""}`}>
