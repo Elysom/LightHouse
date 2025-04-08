@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { calcularPromedio } from "../utiles/calcularPromedio.jsx";
 import Grafica from "./Grafica.jsx";
 import TarjetaEstadistica from "./TarjetaEstadistica.jsx";
+import CodeButton from "./CodeButton.jsx";
 
 function VistaResultadosPromedio({datos}) {
   
@@ -44,7 +45,7 @@ function VistaResultadosPromedio({datos}) {
   return (
     <div className="pb-10">
       <h2 className="text-2xl font-bold mb-6">Resumen de los subdominios</h2>
-
+      <CodeButton />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {promedios.map((m, i) => {
           const estaAbierta = categoriasAbiertas.includes(m.name);
