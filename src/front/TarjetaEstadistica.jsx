@@ -21,15 +21,15 @@ function TarjetaEstadistica({ nombre, score, descripcion, auditorias = [] }) {
           className="inline-block select-none text-lg"
           animate={{ rotate: abierto ? 90 : 0 }} // Rotación de la flecha
           transition={{
-            type: "spring",    // Usamos un "spring" para mayor suavidad
-            stiffness: 100,    // Controla la rigidez del movimiento (más alto = más rápido)
-            damping: 20,       // Controla la amortiguación (más alto = más suave)
-            duration: 0.5,     // Duración de la animación
+            type: "spring",    
+            stiffness: 100,    
+            damping: 20,       
+            duration: 0.5,     
           }}
           style={{
-            transformOrigin: "center", // Asegura que la flecha rote sobre su centro
+            transformOrigin: "center", 
             display: "inline-block",
-            marginRight: "2px", // Añadir un margen para separar el icono del texto
+            marginRight: "2px", 
           }}
         >
           <FaChevronRight />
@@ -38,27 +38,27 @@ function TarjetaEstadistica({ nombre, score, descripcion, auditorias = [] }) {
           className="text-lg font-bold"
           style={{ color: typeof score === "number" ? getColor(score) : "#999" }}
         >
-          {nombre}
+          {nombre+' '}
         </span>
         <span className="text-lg font-mono font-bold text-black">
-          {typeof score === "number" ? `${(score * 100).toFixed(0)}` : "N/A"}{/* Aquí el número y el porcentaje no tienen espacio */}
+          {typeof score === "number" ? `${(score * 100).toFixed(0)}` : "N/A"}
           %
         </span>
       </div>
 
       {/* Contenido desplegable */}
       <motion.div
-        initial={{ height: 0, opacity: 0 }} // Inicia con el contenido colapsado
+        initial={{ height: 0, opacity: 0 }} 
         animate={{
-          height: abierto ? "auto" : 0,  // Anima la expansión o colapso del contenido
-          opacity: abierto ? 1 : 0,      // Suaviza la opacidad
+          height: abierto ? "auto" : 0,  
+          opacity: abierto ? 1 : 0,      
         }} 
-        exit={{ height: 0, opacity: 0 }} // Animación de salida
+        exit={{ height: 0, opacity: 0 }} 
         transition={{
-          type: "spring",       // Usamos un "spring" para que sea más suave
-          stiffness: 80,        // Ajuste de rigidez
-          damping: 25,          // Suaviza el movimiento
-          duration: 0.6,        // Duración de la animación
+          type: "spring",       
+          stiffness: 80,        
+          damping: 25,          
+          duration: 0.6,        
         }} 
         className="overflow-hidden"
         style={{ pointerEvents: abierto ? "auto" : "none" }}
@@ -79,12 +79,12 @@ function TarjetaEstadistica({ nombre, score, descripcion, auditorias = [] }) {
       {/* Auditorías fallidas (animación para la aparición) */}
       {auditorias.length > 0 && abierto && (
         <motion.div
-          initial={{ opacity: 0 }}  // Inicia con la opacidad en 0 (oculto)
-          animate={{ opacity: 1 }}   // Anima la opacidad a 1 (visible)
+          initial={{ opacity: 0 }}  
+          animate={{ opacity: 1 }}   
           transition={{
-            duration: 0.7,   // Aumentamos la duración para que sea más suave
-            ease: "easeInOut", // Suavizamos la transición
-            delay: 0.3,      // Añadimos un pequeño retraso para que ocurra después de que se despliegue el contenido
+            duration: 0.7,   
+            ease: "easeInOut", 
+            delay: 0.3,      
           }} 
           className="pt-3"
         >
@@ -92,7 +92,7 @@ function TarjetaEstadistica({ nombre, score, descripcion, auditorias = [] }) {
           <div className="space-y-1">
             {auditorias.map((audit, idx) => (
               <div key={idx} className="flex items-center">
-                {/* Círculo rojo al lado de cada auditoría */}
+                {/* Círculo rojo al lado de cada auditoría  de momemnto no funciona*/} 
                 <span
                   className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"
                 ></span>
