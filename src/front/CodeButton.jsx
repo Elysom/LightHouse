@@ -10,7 +10,7 @@ const CodeButton = () => {
 
   return (
     <div>
-      <button onClick={openModal}>Abrir ventana de código</button>
+      <button onClick={openModal} class="glosario">Glosario</button>
       <CodeModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );

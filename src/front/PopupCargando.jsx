@@ -1,7 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-function PopupCargando({ progress }) {
-  // Determinar el mensaje según el rango del progreso
+function PopupCargando({ progress, texto }) {
+  const TOTAL_SECONDS = 120;
+  const [timeLeft, setTimeLeft] = useState(TOTAL_SECONDS);
+
+  // Reinicia el tiempo cada vez que progress vuelve a 0
+  useEffect(() => {
+    if (progress === 0) {
+      setTimeLeft(TOTAL_SECONDS);
+    }
+  }, [progress]);
+
+  // Resta segundos reales
+  useEffect(() => {
+    if (progress < 100 && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [progress, timeLeft]);
+
+  // Mensajes según el progreso
   let mensaje = "";
   if (progress >= 0 && progress <= 50) {
     mensaje = "Este proceso puede tardar unos minutos";
@@ -10,6 +30,9 @@ function PopupCargando({ progress }) {
   } else if (progress >= 85 && progress <= 100) {
     mensaje = "Un momento";
   }
+
+  const minutos = Math.floor(timeLeft / 60);
+  const segundos = timeLeft % 60;
 
   return (
     <div
@@ -64,17 +87,31 @@ function PopupCargando({ progress }) {
             }}
           ></div>
         </div>
-        {/* Mostrar el mensaje debajo de la barra de progreso si se definió */}
-        {mensaje && (
+
+        <div
+          style={{
+            marginTop: "12px",
+            fontWeight: "500",
+            color: "#2563EB",
+            fontSize: "16px",
+          }}
+        >
+          {mensaje}
+        </div>
+
+        {progress < 100 && (
           <div
             style={{
-              marginTop: "12px",
+              marginTop: "8px",
               fontWeight: "500",
               color: "#2563EB",
               fontSize: "16px",
             }}
           >
-            {mensaje}
+            Tiempo estimado restante:{" "}
+            {minutos > 0
+              ? `${minutos}m ${segundos}s`
+              : `${segundos} ${segundos === 1 ? "segundo" : "segundos"}`}
           </div>
         )}
       </div>
