@@ -39,7 +39,7 @@ La aplicación se divide en dos partes principales:
 ### 4.1. Requisitos
 
 * Node.js instalado
-* npm o como gestor de paquetes
+* npm como gestor de paquetes
 
 ### 4.2. Instalación
 
